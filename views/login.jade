@@ -1,0 +1,24 @@
+extends layout
+
+block stylesheet
+  link(rel='stylesheet',type='text/css',href='/css/mailpipe-login.css')
+
+block content
+  .container
+    .row
+      .span2.offset3.login-box
+        .icon
+          img(src='/images/illustrations/mail.png',alt='Welcome to MailPipe')
+          h4
+            | Welcome to 
+            small MailPipe
+      .span5
+        form.login-form(action='#')
+          .control-group
+            input.login-field#username(type='text',placeholder='Username',name='username')
+            label.login-field-icon.fui-man-16(for='username')
+          .control-group
+            input.login-field#password(type='password',placeholder='Password',name='password')
+            label.login-field-icon.fui-lock-16(for='password')
+          button.btn.btn-primary.btn-large.btn-block(type='submit') Login
+          a.login-link(href='#') Lost your password?
