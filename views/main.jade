@@ -1,4 +1,31 @@
 extends layout
 
+block stylesheet
+  link(rel='stylesheet',type='text/css',href='/css/mailpipe-main.css')
+
 block content
-  .container
+  .navbar.navbar-inverse.navbar-fixed-top
+    .navbar-inner
+      .container-fluid
+        ul.nav
+          li
+            a.brand(href='#') MailPipe
+          li
+            a(href='#') Services
+        ul.nav.pull-right
+          li
+            a(href='#') Logged in as username
+  .container-fluid
+    .row-fluid
+      .span3
+        .sidebar-nav.well
+          .nav.nav-list
+            li
+              a.btn.btn-primary.btn-large.btn-block(href='#') Add new service
+
+  footer
+    .container-fluid
+      .row-fluid
+        .span3.offset3
+          p
+            | Hello, World
