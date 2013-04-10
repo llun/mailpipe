@@ -18,10 +18,31 @@ block content
   .container-fluid
     .row-fluid
       .span3
-        .sidebar-nav.well
-          .nav.nav-list
-            li
-              a.btn.btn-primary.btn-large.btn-block(href='#') Add new service
+        a.btn.btn-block.btn-large.service-add(href='#') Add new service
+        ul.service-list
+          li
+            .toggle(style='float: right')
+              label.toggle-radio(for='service1-on') ON
+              input#service1-on(type='radio',name='service1',value='on',checked='checked')
+              label.toggle-radio(for='service1-off') OFF
+              input#service1-off(type='radio',name='service1',value='off')
+            label.service-label Service1
+            .service-info
+              span.service-received 13 received
+              span.service-sent 3 sent
+              span.service-error 10 error
+          li
+            label.service-label Service2
+            .service-info
+              span.service-received 0 received
+              span.service-sent 0 sent
+              span.service-error 0 error
+          li
+            label.service-label Service3
+            .service-info
+              span.service-received 0 received
+              span.service-sent 0 sent
+              span.service-error 0 error
 
   footer
     .container-fluid

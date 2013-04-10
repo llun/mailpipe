@@ -1,7 +1,70 @@
+@turquoise: #1ABC9C;
+@green-sea: #16A085;
+@emerland: #2ECC71;
+@nephritis: #27AE60;
+@peter-river: #3498DB;
+@belize-hole: #2980B9;
+@amethyst: #9B59B6;
+@wisteria: #8E44AD;
+@wet-asphalt: #34495E;
+@midnight-blue: #2C3E50;
+@sun-flower: #F1C40F;
+@orange: #F39C12;
+@carrot: #E67E22;
+@pumpkin: #D35400;
+@alizarun: #E74C3C;
+@pomegranate: #C0392B;
+@cloud: #ECF0F1;
+@silver: #BDC3C7;
+@concrete: #95A5A6;
+@asbestos: #7F8C8D;
+
 body {
   padding-top: 60px;
 
   @media (max-width: 986px) {
     padding-top: 0px;
+  }
+
+  a.service-add {
+    border-radius: 6px 6px 0 0;
+    background-color: @belize-hole;
+    font-weight: bolder;
+  }
+
+  ul.service-list {
+    background-color: @cloud;
+    list-style: none;
+
+    margin-top: 0px;
+    margin-left: 0px;
+
+    overflow: hidden;
+
+    border-radius: 0 0 6px 6px;
+
+    label.service-label {
+      font-size: 16.5px;
+      font-weight: bolder;
+    }
+
+    .service-info span {
+      margin-right: 6px;
+    }
+
+    li {
+      padding: 10px;
+      border-top: 1px solid @silver;
+      border-bottom: 1px solid @silver;
+
+      &:first-child {
+        border-top: none;
+        border-bottom: 1px solid @silver;
+      };
+      &:last-child {
+        border-top: 1px solid @silver;
+        border-bottom: none;
+      };
+    }
   }
 }
