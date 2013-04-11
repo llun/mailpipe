@@ -12,4 +12,66 @@ body {
       line-height: 1;
     }
   }
+
+  .toggle {
+
+    background-color: #2ecc71;
+
+    .toggle-radio,
+    &.toggle-off .toggle-radio {
+      background: none;
+      color: white;
+    }
+
+    .knob-on {
+      position: absolute;
+      width: 21px;
+      height: 21px;
+      display: block;
+      background: #198748;
+      border-radius: 21px;
+      top: 4px;
+      right: 5px;
+    }
+
+    .knob-off {
+      position: absolute;
+      width: 21px;
+      height: 21px;
+      display: block;
+      background: #7f8b97;
+      border-radius: 21px;
+      top: 4px;
+      left: 5px;
+    }
+  }
+
+  footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    width: 100%;
+
+    padding: 10px 0 0 0;
+
+    .nav {
+      margin: 0px;
+
+      li {
+        list-style-type: none;
+        display: inline;
+        margin-right: 10px;
+
+        a {
+          display: inline;
+        }
+      }
+    }
+
+    p {
+      margin: 0px;
+    }
+  }
+
 }
