@@ -550,7 +550,6 @@ h6 {
     position: relative; }
     .navbar .nav li:hover > ul {
       opacity: 1;
-      z-index: 100;
       -webkit-transform: scale(1, 1);
       visibility: visible;
       display: block\9; }
