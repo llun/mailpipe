@@ -12,7 +12,7 @@
 @orange: #F39C12;
 @carrot: #E67E22;
 @pumpkin: #D35400;
-@alizarun: #E74C3C;
+@alizarin: #E74C3C;
 @pomegranate: #C0392B;
 @cloud: #ECF0F1;
 @silver: #BDC3C7;
@@ -72,6 +72,59 @@ body {
           border-bottom: none;
         };
 
+      }
+    }
+
+    .service-detail{ 
+
+      ul.actions {
+        list-style: none;
+        margin-top: 10px;
+
+        li {
+          display: inline;
+          margin-right: 4px;
+        }
+      }
+
+      ul.mails {
+        background-color: @cloud;
+        list-style: none;
+        margin-left: 0;
+
+        li.mail {
+          padding: 10px;
+          border-top: none;
+          border-bottom: 1px solid @silver;
+
+          &:last-child {
+            border-bottom: none;
+          };
+
+          .timestamp {
+            color: @silver;
+            font-weight: 100;
+            font-size: 11px;
+          }
+
+          .status {
+            margin-left: 6px;
+          }
+
+          .from {
+            .label { margin-right: 6px; }
+            .address { 
+              margin-right: 6px; 
+              font-weight: bold;
+            }
+          }
+
+          .error p {
+            color: @alizarin;
+            margin-top: 6px;
+            margin-bottom: 0;
+          }
+        }
       }
     }
 
