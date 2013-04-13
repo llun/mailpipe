@@ -35,6 +35,14 @@ body {
       right: 0;
       left: auto;
     }
+
+    .nav > li > ul:before {
+      left: 60px;
+    }
+
+    .nav > li > ul {
+      z-index: 100;
+    }
   }
 
   .content {
@@ -85,6 +93,7 @@ body {
 
       }
     }
+    // end of service-list
 
     .service-detail{ 
 
@@ -137,8 +146,37 @@ body {
           }
         }
       }
+      // end of mails
+    }
+    // end of service-detail
+
+    .service-new {
+      background-color: @cloud;
+
+      form {
+        margin-top: 20px;
+
+        label {
+          font-weight: bold;
+        }
+
+        input[type='text'] {
+          height: 33px;
+        }
+
+        ul {
+          list-style: none;
+          margin-left: 0;
+
+          li {
+            margin-right: 6px;
+            display: inline;
+          }
+        }
+      }
     }
 
   }
+  // end of content
   
 }
