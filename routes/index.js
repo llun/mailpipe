@@ -14,3 +14,7 @@ exports.login = function (req, res) {
 exports.main = function (req, res) {
   res.render('main', { title: 'Main' });
 }
+
+exports.add = function (req, res) {
+  res.render('new-service', { title: 'New service' });
+}

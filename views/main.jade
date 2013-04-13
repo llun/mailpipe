@@ -1,126 +1,94 @@
-extends layout
+extends loggedin-layout
 
-block stylesheet
-  link(rel='stylesheet',type='text/css',href='/css/mailpipe-main.css')
-
-block content
-  .navbar.navbar-inverse.navbar-fixed-top
-    .navbar-inner
-      .container-fluid
-        ul.nav
-          li
-            a.brand(href='#') MailPipe
-          li
-            a(href='#') Services
-        ul.nav.pull-right
-          li
-            a(href='#') Logged in as username
-  .container-fluid.content
-    .row-fluid
-      .span3
-        a.btn.btn-block.btn-large.service-add(href='#') Add new service
-        ul.service-list
-          li
-            .toggle(style='float: right')
-              label.toggle-radio(for='service1-on') ON
-                span.knob-on
-              input#service1-on(type='radio',name='service1',value='on',checked='checked')
-              label.toggle-radio(for='service1-off') OFF
-                span.knob-off
-              input#service1-off(type='radio',name='service1',value='off')
-            label.service-label Service1
-            .service-info
-              span.service-received 13 received
-              span.service-sent 3 sent
-              span.service-error 10 error
-          li.selected
-            .toggle(style='float: right')
-              label.toggle-radio(for='service2-on') ON
-                span.knob-on
-              input#service2-on(type='radio',name='service2',value='on')
-              label.toggle-radio(for='service2-off') OFF
-                span.knob-off
-              input#service2-off(type='radio',name='service2',value='off',checked='checked')
-            label.service-label Service2
-            .service-info
-              span.service-received 0 received
-              span.service-sent 0 sent
-              span.service-error 0 error
-          li
-            .toggle(style='float: right')
-              label.toggle-radio(for='service3-on') ON
-                span.knob-on
-              input#service3-on(type='radio',name='service3',value='on',checked='checked')
-              label.toggle-radio(for='service3-off') OFF
-                span.knob-off
-              input#service3-off(type='radio',name='service3',value='off')
-            label.service-label Service3
-            .service-info
-              span.service-received 0 received
-              span.service-sent 0 sent
-              span.service-error 0 error
-      .span9.service-detail
-        .row-fluid
-          .span9
-            h2 
-              | Service2 
-              small user+service@mailpipe.llun.in.th
-          .span3
-            ul.actions
-              li
-                a.btn(href='#') Edit
-              li
-                a.btn.btn-danger(href='#') Delete
-        .row-fluid
-          .span12
-            ul.mails
-              li.mail 
-                .status.badge.badge-success.pull-right sent
-                .timestamp.pull-right 3 mins ago
-                .from 
-                  span.label From
-                  span.address someone &lt;someone@mail.service.com&gt;
-              li.mail 
-                .status.badge.badge-important.pull-right error
-                .timestamp.pull-right 4 mins ago
-                .from
-                  span.label From
-                  span.address someone &lt;nouser@mail.service.com&gt;
-                .error
-                  p Not authorize user
-              li.mail 
-                .status.badge.badge-success.pull-right sent
-                .timestamp.pull-right 5 mins ago
-                .from 
-                  span.label From
-                  span.address someone &lt;someone@mail.service.com&gt;
-              li.mail 
-                .status.badge.badge-success.pull-right sent
-                .timestamp.pull-right 5 mins 21 seconds ago
-                .from 
-                  span.label From
-                  span.address someone &lt;someone@mail.service.com&gt;
-              li.mail 
-                .status.badge.badge-success.pull-right sent
-                .timestamp.pull-right 5 mins 39 seconds ago
-                .from 
-                  span.label From
-                  span.address someone &lt;someone@mail.service.com&gt;
-
-  footer#footer
-    .container-fluid
+block inner-content
+  .row-fluid
+    .span3
+      a.btn.btn-block.btn-large.service-add(href='/services/add.html') Add new service
+      ul.service-list
+        li
+          .toggle(style='float: right')
+            label.toggle-radio(for='service1-on') ON
+              span.knob-on
+            input#service1-on(type='radio',name='service1',value='on',checked='checked')
+            label.toggle-radio(for='service1-off') OFF
+              span.knob-off
+            input#service1-off(type='radio',name='service1',value='off')
+          label.service-label Service1
+          .service-info
+            span.service-received 13 received
+            span.service-sent 3 sent
+            span.service-error 10 error
+        li.selected
+          .toggle(style='float: right')
+            label.toggle-radio(for='service2-on') ON
+              span.knob-on
+            input#service2-on(type='radio',name='service2',value='on')
+            label.toggle-radio(for='service2-off') OFF
+              span.knob-off
+            input#service2-off(type='radio',name='service2',value='off',checked='checked')
+          label.service-label Service2
+          .service-info
+            span.service-received 0 received
+            span.service-sent 0 sent
+            span.service-error 0 error
+        li
+          .toggle(style='float: right')
+            label.toggle-radio(for='service3-on') ON
+              span.knob-on
+            input#service3-on(type='radio',name='service3',value='on',checked='checked')
+            label.toggle-radio(for='service3-off') OFF
+              span.knob-off
+            input#service3-off(type='radio',name='service3',value='off')
+          label.service-label Service3
+          .service-info
+            span.service-received 0 received
+            span.service-sent 0 sent
+            span.service-error 0 error
+    .span9.service-detail
+      .row-fluid
+        .span9
+          h2 
+            | Service2 
+            small user+service@mailpipe.llun.in.th
+        .span3
+          ul.actions
+            li
+              a.btn(href='#') Edit
+            li
+              a.btn.btn-danger(href='#') Delete
       .row-fluid
         .span12
-          p.pull-right
-            | &copy; 2013 Maythee Anegboonlap. All Right Reserved. 
-            | UI Elements from 
-            a(href='http://designmodo.github.io/Flat-UI/') Flat UI
-
-          ul.nav
-            li
-              a(href='#') Term of Service
-            li
-              a(href='#') Privacy
-            li
-              a(href='#') Security
+          ul.mails
+            li.mail 
+              .status.badge.badge-success.pull-right sent
+              .timestamp.pull-right 3 mins ago
+              .from 
+                span.label From
+                span.address someone &lt;someone@mail.service.com&gt;
+            li.mail 
+              .status.badge.badge-important.pull-right error
+              .timestamp.pull-right 4 mins ago
+              .from
+                span.label From
+                span.address someone &lt;nouser@mail.service.com&gt;
+              .error
+                p Not authorize user
+            li.mail 
+              .status.badge.badge-success.pull-right sent
+              .timestamp.pull-right 5 mins ago
+              .from 
+                span.label From
+                span.address someone &lt;someone@mail.service.com&gt;
+            li.mail 
+              .status.badge.badge-success.pull-right sent
+              .timestamp.pull-right 5 mins 21 seconds ago
+              .from 
+                span.label From
+                span.address someone &lt;someone@mail.service.com&gt;
+            li.mail 
+              .status.badge.badge-success.pull-right sent
+              .timestamp.pull-right 5 mins 39 seconds ago
+              .from 
+                span.label From
+                span.address someone &lt;someone@mail.service.com&gt;
           

@@ -1,0 +1,42 @@
+extends layout
+
+block stylesheet
+  link(rel='stylesheet',type='text/css',href='/css/mailpipe-main.css')
+
+block content
+  .navbar.navbar-inverse.navbar-fixed-top
+    .navbar-inner
+      .container-fluid
+        ul.nav
+          li
+            a.brand(href='#') MailPipe
+          li
+            a(href='#') Services
+        ul.nav.pull-right
+          li
+            a(href='#') Logged in as username
+            ul.user-actions
+              li
+                a(href='#') Profile
+              li
+                a(href='#') Logout
+  .container-fluid.content
+    block inner-content
+
+  footer#footer
+    .container-fluid
+      .row-fluid
+        .span12
+          p.pull-right
+            | &copy; 2013 Maythee Anegboonlap. All Right Reserved. 
+            | UI Elements from 
+            a(href='http://designmodo.github.io/Flat-UI/') Flat UI
+
+          ul.nav
+            li
+              a(href='#') Term of Service
+            li
+              a(href='#') Privacy
+            li
+              a(href='#') Security
+          
