@@ -1,15 +1,42 @@
 {
-  "name": "redirector",
+  "name": "mailpipe",
   "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.x",
-    "less-middleware": "0.1.x",
+    "connect-flash": "0.1.x",
+    "connect-mongo": "0.2.x",
+    "express": "3.0.3",
     "jade": "0.27.x",
+    "less-middleware": "0.1.x",
+    "mailparser": "0.3.x",
+    "marked": "0.2.x",
+    "moment": "1.7.x",
+    "mongoose": "3.5.x",
+    "nconf": "0.6.x",
+    "node-uuid": "1.4.x",
+    "oauth": "0.9.x",
+    "passport": "0.1.x",
+    "passport-local": "0.1.x",
+    "q": "0.8.x",
     "simplesmtp": "0.2.x",
-    "mailparser": "0.3.x"
+    "underscore": "1.4.x",
+    "underscore.string": "2.3.x"
+  },
+  "devDependencies": {
+    "chai": "1.5.x",
+    "sinon": "1.6.x",
+    "sinon-chai": "2.3.x",
+    "chai-as-promised": "3.2.x",
+    "mocha-as-promised": "1.2.x"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.1.x"
+  },
+  "scripts": {
+    "start": "node app"
   }
 }
