@@ -12,7 +12,6 @@
     "jade": "0.27.x",
     "less-middleware": "0.1.x",
     "mailparser": "0.3.x",
-    "marked": "0.2.x",
     "moment": "1.7.x",
     "mongoose": "3.5.x",
     "nconf": "0.6.x",

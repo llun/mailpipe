@@ -8,11 +8,46 @@ var express = require('express')
   , less_middleware = require('less-middleware')
   , user = require('./routes/user')
   , http = require('http')
+  , moment = require('moment')
   , path = require('path')
   , fs = require('fs')
-  , simplesmtp = require('simplesmtp');
+  , simplesmtp = require('simplesmtp')
+  , _ = require('underscore');
+    
+_.str = require('underscore.string');
+
+var User = require('./models/user');
+
+var passport = require('passport'),
+    LocalStrategy = require('passport-local').Strategy;
+
+var flash = require('connect-flash');
+var MongoStore = require('connect-mongo')(express);
 
 var app = express();
+
+// passport and security session
+var cookieSecret = 'tUjurat6';
+passport.use(new LocalStrategy({
+    usernameField: 'email',
+    passwordField: 'password'
+  },
+  function(username, password, done) {
+    User.authenticate(username, password, function (err, user) {
+      return done(null, user, err);
+    });
+  }
+));
+
+passport.serializeUser(function (user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 app.configure('development', function(){
   app.use(express.errorHandler());
@@ -27,20 +62,46 @@ app.configure('production', function() {
 });
 
 // all environments
-app.set('port', process.env.PORT || 3000);
-app.set('views', __dirname + '/views');
-app.set('view engine', 'jade');
-app.use(express.favicon());
-app.use(express.logger('dev'));
-app.use(express.bodyParser());
-app.use(express.methodOverride());
-  app.use(express.cookieParser('your secret here'));
-  app.use(express.session());
-app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+app.configure(function () {
+  app.set('port', process.env.PORT || 3000);
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'jade');
+  app.use(express.favicon());
+  app.use(express.logger('dev'));
+  app.use(express.bodyParser());
+  app.use(express.methodOverride());
+
+  app.use(express.cookieParser(cookieSecret));
+  if (process.env.MONGO_URL) {
+    app.use(express.session({
+      secret: cookieSecret,
+      store: new MongoStore({
+        url: process.env.MONGO_URL || 'mongodb://localhost/mailpipe'
+      })
+    }));
+  }
+  else {
+    app.use(express.session());
+  }
+
+  app.use(express.csrf());
+  app.use(flash());
+  app.use(passport.initialize());
+  app.use(passport.session());
+  app.use(function (req, res, next) {
+    res.locals.token = req.session._csrf;
+    res.locals.user = req.user;
+    res.locals.flash = req.flash();
+    next();
+  });
+  app.use(app.router);
+  app.use(express.static(path.join(__dirname, 'public')));  
+});
+
+app.locals.moment = moment;
+app.locals._ = _;
 
 app.get('/', routes.index);
-app.get('/login.html', routes.login);
 app.get('/register.html', routes.register);
 app.get('/forget.html', routes.forget);
 app.get('/forget-result.html', routes.forget_result);
@@ -48,6 +109,13 @@ app.get('/profile.html', routes.profile);
 app.get('/main.html', routes.main);
 app.get('/services/add.html', routes.add);
 app.get('/services/update.html', routes.update);
+
+app.get('/login.html', routes.login);
+app.post('/login', passport.authenticate('local',
+  { successRedirect: '/main.html',
+    failureRedirect: '/login.html',
+    failureFlash: true }));
+app.get('/logout', routes.logout);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
