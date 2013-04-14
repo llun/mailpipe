@@ -150,8 +150,13 @@ body {
     }
     // end of service-detail
 
-    .service-new {
+    .service-new, .profile {
       background-color: @cloud;
+
+      h2 {
+        margin-left: 10px;
+        font-weight: bolder;
+      }
 
       form {
         margin-top: 20px;
@@ -162,6 +167,18 @@ body {
 
         input[type='text'] {
           height: 33px;
+
+          &:focus + .form-field-icon {
+            color: @turquoise;
+          };
+        }
+
+        .form-field-icon {
+          position: relative;
+          right: 22px;
+          top: 3px;
+
+          color: @silver;
         }
 
         ul {

@@ -34,3 +34,7 @@ exports.profile = function (req, res) {
 exports.add = function (req, res) {
   res.render('new-service', { title: 'New service' });
 }
+
+exports.update = function (req, res) {
+  res.render('update-service', { title: 'Update service' });
+}

@@ -47,6 +47,7 @@ app.get('/forget-result.html', routes.forget_result);
 app.get('/profile.html', routes.profile);
 app.get('/main.html', routes.main);
 app.get('/services/add.html', routes.add);
+app.get('/services/update.html', routes.update);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
