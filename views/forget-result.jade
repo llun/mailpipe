@@ -1,0 +1,21 @@
+extends layout
+
+block stylesheet
+  link(rel='stylesheet',type='text/css',href='/css/mailpipe-gate.css')
+
+block content
+  .container
+    .row
+      .span2.offset3.login-box
+        .icon
+          img(src='/images/illustrations/mail.png',alt='Welcome to MailPipe')
+          h4
+            | Welcome to 
+            small MailPipe
+      .span5
+        form.login-form
+          p
+            | We're sending your new password to your mail. 
+            | Please go to your mailbox and login with new password.
+
+          a(href='/') Back to main page

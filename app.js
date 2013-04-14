@@ -40,9 +40,12 @@ app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', routes.index);
-app.get('/login', routes.login);
-app.get('/users', user.list);
-app.get('/main', routes.main);
+app.get('/login.html', routes.login);
+app.get('/register.html', routes.register);
+app.get('/forget.html', routes.forget);
+app.get('/forget-result.html', routes.forget_result);
+app.get('/profile.html', routes.profile);
+app.get('/main.html', routes.main);
 app.get('/services/add.html', routes.add);
 
 http.createServer(app).listen(app.get('port'), function(){
