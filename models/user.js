@@ -3,6 +3,7 @@ var crypto = require('crypto'),
     mongoose = require('mongoose');
 
 var schema = mongoose.Schema({
+  username: { type: String, required: true, index: true },
   email: { type: String, required: true, index: true },
   password: { type: String, required: true,
     set: function (val) {
@@ -23,8 +24,8 @@ schema.set('toObject', {
 });
 
 var User = database.model('User', schema);
-User.authenticate = function (email, password, cb) {
-  User.findOne({ email: email }, function (err, user) {
+User.authenticate = function (username, password, cb) {
+  User.findOne({ username: username }, function (err, user) {
     if (user) {
       var sha = crypto.createHash('sha256');
       sha.update(password);

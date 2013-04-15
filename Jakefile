@@ -40,13 +40,13 @@ namespace('db', function () {
     var database = require('./models/database');
     var User = require('./models/user');
 
-    q.nfcall(User.create.bind(User), [ { email: 'admin@mailpipe.com', password: 'password' }])
+    q.nfcall(User.create.bind(User), [ { username: 'firstuser', email: 'firstuser@mailpipe.com', password: 'password' }])
       .then(function () {
         return q.nfcall(mongoose.disconnect.bind(mongoose));
       })
       .then(function () {
         console.log ('Seed data complete');
-        console.log ('Please login with email: admin@mailpipe.com password: password');
+        console.log ('Please login with username: firstuser password: password');
         console.log ('And go to your profile to change password');
         jake.emit('complete');
       })

@@ -6,7 +6,6 @@
 var express = require('express')
   , routes = require('./routes')
   , less_middleware = require('less-middleware')
-  , user = require('./routes/user')
   , http = require('http')
   , moment = require('moment')
   , path = require('path')
@@ -16,7 +15,11 @@ var express = require('express')
     
 _.str = require('underscore.string');
 
+var security = require('./security');
+
 var User = require('./models/user');
+
+var UserRoute = require('./routes/user');
 
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy;
@@ -29,7 +32,7 @@ var app = express();
 // passport and security session
 var cookieSecret = 'tUjurat6';
 passport.use(new LocalStrategy({
-    usernameField: 'email',
+    usernameField: 'username',
     passwordField: 'password'
   },
   function(username, password, done) {
@@ -101,15 +104,22 @@ app.configure(function () {
 app.locals.moment = moment;
 app.locals._ = _;
 
+// Welcome page
 app.get('/', routes.index);
+
+// Authorize page
+app.get('/profile.html', security.requiredLogin, routes.profile);
+app.get('/main.html', security.requiredLogin, routes.main);
+app.get('/services/add.html', security.requiredLogin, routes.add);
+app.get('/services/update.html', security.requiredLogin, routes.update);
+
+// User actions
+app.post('/user/register', UserRoute.register);
+
+// Gateway page
 app.get('/register.html', routes.register);
 app.get('/forget.html', routes.forget);
 app.get('/forget-result.html', routes.forget_result);
-app.get('/profile.html', routes.profile);
-app.get('/main.html', routes.main);
-app.get('/services/add.html', routes.add);
-app.get('/services/update.html', routes.update);
-
 app.get('/login.html', routes.login);
 app.post('/login', passport.authenticate('local',
   { successRedirect: '/main.html',
