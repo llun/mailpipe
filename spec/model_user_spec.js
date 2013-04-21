@@ -33,6 +33,41 @@ describe('User', function () {
       user.save();
     });
 
+    it ('should lowercase username before save', function (done) {
+      var user = new User({
+        username: 'MayThEE',
+        email: 'email@gmail.com',
+        password: 'password'
+      });
+
+      var stub = sinon.stub(user.collection, 'insert', function (user, options, cb) {
+        user.username.should.equal('maythee');
+        stub.restore();
+
+        done();
+      });
+
+      user.save();
+
+    });
+
+    it ('should lowercase email before save', function (done) {
+      var user = new User({
+        username: 'MayThEE',
+        email: 'EMaIl@GMAIL.com',
+        password: 'password'
+      });
+
+      var stub = sinon.stub(user.collection, 'insert', function (user, options, cb) {
+        user.email.should.equal('email@gmail.com');
+        stub.restore();
+
+        done();
+      });
+
+      user.save();
+    });
+
     it ('should not allow invalid character in username', function (done) {
 
       var user = new User({

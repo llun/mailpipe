@@ -14,6 +14,7 @@ block inner-content
           .controls
             select(id='service-authentication-type',name='service-authentication-type',value='no',tabindex=1)
               option(value='oauth') OAuth
+              option(value='basic') Basic Authentication
               option(value='no',selected='selected') No Authentication
         .control-group
           label.control-label(for='service-oauth-key') OAuth Key

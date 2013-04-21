@@ -4,8 +4,14 @@ var crypto = require('crypto'),
     q = require('q');
 
 var schema = mongoose.Schema({
-  username: { type: String, required: true, index: true, unique: true },
-  email: { type: String, required: true, index: true, unique: true },
+  username: { type: String, required: true, index: true, unique: true, 
+    set: function (val) {
+      return val.toLowerCase();
+    }},
+  email: { type: String, required: true, index: true, unique: true, 
+    set: function (val) {
+      return val.toLowerCase();
+    }},
   password: { type: String, required: true,
     set: function (val) {
       var sha = crypto.createHash('sha256');

@@ -3,9 +3,21 @@ var database = require('./database'),
 
 var schema = mongoose.Schema({
   name: { type: String, required: true, index: true },
-  // This should link to user
-  owner: { type: String, required: true },
-  authentication: { type: String, required: true },
+  // User object id
+  user: { type: String, required: true },
+  authentication: {
+    type: { type: String, required: true, validate: [ 
+      function (val) {
+        return /(none|basic|oauth)/.test(val);
+      }, 'Invalid type'] },
+    // Basic authentication, will use key as username and pass as password,
+    // For oAuth, key is service key and pass is service secret.
+    key: { type: String, validate: [
+      function (val) {
+
+      }, 'required' ] },
+    pass: { type: String }
+  },
   target: { type: String, required: true },
   timestamp: { type: Date, default: Date.now }
 });
