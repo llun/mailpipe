@@ -1,6 +1,7 @@
 var crypto = require('crypto'),
     database = require('./database'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    q = require('q');
 
 var schema = mongoose.Schema({
   username: { type: String, required: true, index: true, unique: true },
@@ -61,7 +62,35 @@ User.register = function (user, cb) {
               value: user.confirm } } })
   }
   else {
-    User.create(user, cb);
+    q.all([
+      q.nfcall(User.findOne.bind(User), { username: user.username }),
+      q.nfcall(User.findOne.bind(User), { email: user.email })
+      ])
+      .spread(function (u1, u2) {
+        if (u1) {
+          return cb ({ message: 'Validation failed',
+                       name: 'ValidationError',
+                       errors: { username: 
+                          { message: 'Validator "Invalid username" failed for path username with value `' + user.username + '`',
+                            name: 'ValidatorError',
+                            path: 'username',
+                            type: 'Duplicate username',
+                            value: user.username } } })
+        }
+        else if (u2) {
+          return cb ({ message: 'Validation failed',
+                       name: 'ValidationError',
+                       errors: { password: 
+                          { message: 'Validator "Invalid email" failed for path email with value `' + user.email + '`',
+                            name: 'ValidatorError',
+                            path: 'email',
+                            type: 'Duplicate email',
+                            value: user.username } } })
+        }
+        else {
+          return User.create(user, cb);
+        }
+      });
   }
 }
 

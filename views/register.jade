@@ -17,8 +17,11 @@ block content
           if flash.error && flash.error.length > 0
             .alert.alert-error
               ul
-                each error in flash.error
-                  li= error
+                each object, key in flash.error[0].errors
+                  if object.type == 'required'
+                    li #{key} is required
+                  else
+                    li= object.type
           .control-group
             input.login-field#username(type='text',placeholder='Username',name='username')
             label.login-field-icon.fui-man-16(for='username')

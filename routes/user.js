@@ -6,11 +6,7 @@ var UserRoute = {
   register: function (req, res) {
     User.register(req.body, function (err, user) {
       if (err) {
-        var errors = [];
-        for (var key in err.errors) {
-          errors.push(err.errors[key].type);
-        }
-        req.flash('error', errors);
+        req.flash('error', err);
         res.redirect('/register.html');
       }
       else {

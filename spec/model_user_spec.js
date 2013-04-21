@@ -59,7 +59,6 @@ describe('User', function () {
       });
 
       user.save(function (err) {
-        console.log (err);
         should.exist(err, 'Email should have errors');
         err.message.should.equal('Validation failed');
         err.errors.email.type.should.equal('Invalid email');
