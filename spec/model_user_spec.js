@@ -1,6 +1,13 @@
-var crypto = require('crypto'),
+var chai = require('chai'),
+    crypto = require('crypto'),
     should = require('chai').should(),
-    sinon = require('sinon');
+    sinon = require('sinon'),
+    sinon_chai = require('sinon-chai'),
+    q = require('q');
+
+chai.use(sinon_chai);
+
+require('mocha-as-promised')();
 
 var User = require('../models/user');
 
@@ -11,12 +18,12 @@ describe('User', function () {
     it ('should hash password before save', function (done) {
 
       var user = new User({
+        username: 'test',
         email: 'sample@mail.com',
         password: 'password'
       });
 
-      var stub = sinon.stub(user.collection, 'insert', function (user) {
-
+      var stub = sinon.stub(user.collection, 'insert', function (user, options, callback) {
         user.password.should.not.equal('password');
         stub.restore();
 
@@ -24,7 +31,40 @@ describe('User', function () {
       });
 
       user.save();
+    });
 
+    it ('should not allow invalid character in username', function (done) {
+
+      var user = new User({
+        username: 'llun&as',
+        email: 'sample@gmail.com',
+        password: 'password'
+      });
+
+      user.save(function (err) {
+        should.exist(err, 'Username should have errors');
+        err.message.should.equal('Validation failed');
+        err.errors.username.type.should.equal('Invalid username');
+
+        done();
+      });
+
+    });
+
+    it ('should not allow invalid email format', function (done) {
+      var user = new User({
+        username: 'test',
+        email: 'sample',
+        password: 'password'
+      });
+
+      user.save(function (err) {
+        should.exist(err, 'Email should have errors');
+        err.message.should.equal('Validation failed');
+        err.errors.email.type.should.equal('Invalid email');
+
+        done();
+      });
     });
 
   });
@@ -33,6 +73,7 @@ describe('User', function () {
 
     it ('should remove password from output', function () {
       var user = new User({
+        username: 'test',
         email: 'sample@mail.com',
         password: 'password'
       });
@@ -43,6 +84,7 @@ describe('User', function () {
 
     it ('should have timestamp', function () {
       var user = new User({
+        username: 'test',
         email: 'sample@mail.com',
         password: 'password'
       });
@@ -60,6 +102,7 @@ describe('User', function () {
 
       before(function () {
         stub = sinon.stub(User, 'findOne').callsArgWith(1, null, {
+          username: 'test',
           email: 'sample@mail.com',
           password: crypto.createHash('sha256').update('password').digest('hex')
         });
@@ -67,7 +110,7 @@ describe('User', function () {
 
       it ('should return user', function (done) {
 
-        User.authenticate('sample@mail.com', 'password', function (error, user) {
+        User.authenticate('test', 'password', function (error, user) {
 
           should.not.exist(error);
           should.exist(user);
@@ -79,7 +122,7 @@ describe('User', function () {
 
       it ('should return wrong password', function (done) {
 
-        User.authenticate('sample@mail.com', 'wrongpass', function (error, user) {
+        User.authenticate('test', 'wrongpass', function (error, user) {
           should.exist(error);
           should.not.exist(user);
 
@@ -103,7 +146,7 @@ describe('User', function () {
       });
 
       it ('should return no user found', function (done) {
-        User.authenticate('sample@mail.com', 'password', function (error, user) {
+        User.authenticate('test', 'password', function (error, user) {
           should.exist(error);
           should.not.exist(user);
 

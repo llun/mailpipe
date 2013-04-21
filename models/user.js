@@ -23,6 +23,13 @@ schema.set('toObject', {
   }
 });
 
+schema.path('username').validate(function (val) {
+  return /^[a-zA-Z]+\w*$/.test(val);
+}, 'Invalid username');
+schema.path('email').validate(function (val) {
+  return /^[a-zA-Z]+[\+\w]*@\w+[\.\w]*\.\w+$/.test(val);
+}, 'Invalid email');
+
 var User = database.model('User', schema);
 User.authenticate = function (username, password, cb) {
   User.findOne({ username: username }, function (err, user) {

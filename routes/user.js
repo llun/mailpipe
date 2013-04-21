@@ -11,8 +11,6 @@ var UserRoute = {
 
     // Validate email and password
 
-    return q.nfcall(User.create.bind(User), [ { email:  } ])
-
     res.send('Hello, World');
   },
 

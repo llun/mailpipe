@@ -13,7 +13,7 @@
     "less-middleware": "0.1.x",
     "mailparser": "0.3.x",
     "moment": "1.7.x",
-    "mongoose": "3.5.x",
+    "mongoose": "3.6.x",
     "nconf": "0.6.x",
     "node-uuid": "1.4.x",
     "oauth": "0.9.x",
