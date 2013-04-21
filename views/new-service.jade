@@ -8,31 +8,32 @@ block inner-content
         .control-group
           label.control-label(for='service-name') Service Name
           .controls
-            input(type='text',id='service-name',name='service-name')
+            input(type='text',id='service-name',name='name')
         .control-group
           label.control-label(for='service-authentication-type') Authentication Type
           .controls
-            select(id='service-authentication-type',name='service-authentication-type',value='no',tabindex=1)
+            select(id='service-authentication-type',name='authentication.type',value='no')
               option(value='oauth') OAuth
               option(value='basic') Basic Authentication
-              option(value='no',selected='selected') No Authentication
+              option(value='none',selected='selected') No Authentication
         .control-group
-          label.control-label(for='service-oauth-key') OAuth Key
+          label.control-label(for='service-key') Key
           .controls
-            input(type='text',id='service-oauth-key',name='service-oauth-key')
+            input(type='text',id='service-key',name='authentication.key')
         .control-group
-          label.control-label(for='service-oauth-secret') OAuth Secret
+          label.control-label(for='service-pass') OAuth Secret
           .controls
-            input(type='text',id='service-oauth-secret',name='service-oauth-secret')
+            input(type='text',id='service-pass',name='authentication.pass')
         .control-group
           label.control-label(for='service-url') URL
           .controls
-            input(type='text',id='service-url',name='service-url')
+            input(type='text',id='service-url',name='target')
         .control-group
           .controls
+            input(type='hidden',name='_csrf',value='#{token}')
             ul
               li
-                button.btn Add
+                button.btn(type='submit') Add
               li
                 button.btn.btn-danger Cancel
 
@@ -40,5 +41,6 @@ block script
   script(type='text/javascript')
     $(document).ready(function () {
       $('#service-authentication-type').select2();
+      new AddServiceView();
     });
   

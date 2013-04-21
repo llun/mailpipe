@@ -1,40 +1,40 @@
 module.exports = {
   // Mocking pages
   index: function (req, res) {
-    console.log ('hey');
-    res.render('index', { title: 'Express' });
+
+    res.render('index');
   },
   forget: function (req, res) {
-    res.render('forget', { title: 'Forget Password' });
+    res.render('forget');
   },
   forget_result: function (req, res) {
-    res.render('forget-result', { title: 'Forget password' });
+    res.render('forget-result');
   },
   main: function (req, res) {
-    res.render('main', { title: 'Main' });
+    res.render('main');
   },
   profile: function (req, res) {
-    res.render('profile', { title: 'User Profile' });
+    res.render('profile');
   },
   add: function (req, res) {
-    res.render('new-service', { title: 'New service' });
+    res.render('new-service');
   },
   update: function (req, res) {
-    res.render('update-service', { title: 'Update service' });
+    res.render('update-service');
   },
 
   // User gateway pages
   login: function (req, res) {
-    res.render('login', { title: 'Login' });
+    res.render('login');
   },
   logout: function (req, res) {
     req.logout();
     res.redirect('/');
   },
   register: function (req, res) {
-    res.render('register', { title: 'Register' });
+    res.render('register');
   },
   forget: function (req, res) {
-    res.render('forget', { title: 'Forget Password' });
+    res.render('forget');
   },
 }

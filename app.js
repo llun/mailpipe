@@ -102,6 +102,7 @@ app.configure(function () {
   app.use(express.static(path.join(__dirname, 'public')));  
 });
 
+app.locals.title = 'MailPipe';
 app.locals.moment = moment;
 app.locals._ = _;
 

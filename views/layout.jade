@@ -14,14 +14,11 @@ html
 
     link(rel='shortcut icon',href='/image/favicon.ico')
 
-    // HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file.
-    //if lt IE9
-      script(src='/javascripts/html5shiv.js')
-
   body
     block content
 
-    script(src='/javascripts/jquery-1.8.2.min.js')
+    script(src='/javascripts/backbone-min.js')
+    script(src='/javascripts/jquery-2.0.0.min.js')
     script(src='/javascripts/jquery-ui-1.10.0.custom.min.js')
     script(src='/javascripts/custom_checkbox_and_radio.js')
     script(src='/javascripts/custom_radio.js')
@@ -29,8 +26,5 @@ html
     script(src='/javascripts/jquery.placeholder.js')
     script(src='/javascripts/select2.min.js')
     script(src='http://vjs.zencdn.net/c/video.js')
-    //if lt IE8
-      script(src='/javascripts/icon-font-ie7.js')
-      script(src='/javascripts/icon-font-ie7-24.js')
-
+    
     block script
