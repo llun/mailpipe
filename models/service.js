@@ -1,10 +1,14 @@
 var database = require('./database'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    util = require('util');
 
 var schema = mongoose.Schema({
   name: { type: String, required: true, index: true, 
     set: function (val) {
       return val.toLowerCase();
+    },
+    validate: function (val) {
+      return /[a-zA-Z]+\w+/.test(val);
     }},
   // User object id
   user: { type: String, required: true },
@@ -44,4 +48,23 @@ schema.set('toObject', {
 });
 
 var Service = database.model('Service', schema);
+Service.add = function (user, input, cb) {
+  input.user = user;
+  Service.findOne({ name: input.name }, function (err, service) {
+    if (service) {
+      return cb ({ message: 'Validation failed',
+                   name: 'ValidationError',
+                   errors: { name: 
+                      { message: 'Validator "Invalid name" failed for path email with value `' + service.name + '`',
+                        name: 'ValidatorError',
+                        path: 'name',
+                        type: 'Duplicate service name',
+                        value: service.name } } });
+    }
+    else {
+      Service.create(input, cb);
+    }
+  });
+}
+
 module.exports = Service;

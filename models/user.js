@@ -82,17 +82,17 @@ User.register = function (user, cb) {
                             name: 'ValidatorError',
                             path: 'username',
                             type: 'Duplicate username',
-                            value: user.username } } })
+                            value: user.username } } });
         }
         else if (userByEmail) {
           return cb ({ message: 'Validation failed',
                        name: 'ValidationError',
-                       errors: { password: 
+                       errors: { email: 
                           { message: 'Validator "Invalid email" failed for path email with value `' + user.email + '`',
                             name: 'ValidatorError',
                             path: 'email',
                             type: 'Duplicate email',
-                            value: user.username } } })
+                            value: user.username } } });
         }
         else {
           return User.create(user, cb);
