@@ -19,7 +19,8 @@ var security = require('./security');
 
 var User = require('./models/user');
 
-var UserRoute = require('./routes/user');
+var UserRoute = require('./routes/user'),
+    ServiceRoute = require('./routes/service');
 
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy;
@@ -114,18 +115,21 @@ app.get('/services/add.html', security.requiredLogin, routes.add);
 app.get('/services/update.html', security.requiredLogin, routes.update);
 
 // User actions
-app.post('/user/register', UserRoute.register);
+app.post('/users/register', UserRoute.register);
+
+// Service actions
+app.post('/services/add', security.requiredLogin, ServiceRoute.add);
 
 // Gateway page
 app.get('/register.html', routes.register);
 app.get('/forget.html', routes.forget);
 app.get('/forget-result.html', routes.forget_result);
 app.get('/login.html', routes.login);
-app.post('/login', passport.authenticate('local',
+app.post('/users/login', passport.authenticate('local',
   { successRedirect: '/main.html',
     failureRedirect: '/login.html',
     failureFlash: true }));
-app.get('/logout', routes.logout);
+app.get('/users/logout', routes.logout);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

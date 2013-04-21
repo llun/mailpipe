@@ -4,7 +4,7 @@ block inner-content
   .row-fluid
     .span6.offset3.service-new
       h2 Add new service
-      form.form-horizontal(action='/main.html')
+      form.form-horizontal(action='/services/add',method='post')
         .control-group
           label.control-label(for='service-name') Service Name
           .controls
