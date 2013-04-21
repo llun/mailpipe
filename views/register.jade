@@ -14,6 +14,11 @@ block content
             small MailPipe
       .span5
         form.login-form(action='/user/register',method='post')
+          if flash.error && flash.error.length > 0
+            .alert.alert-error
+              ul
+                each error in flash.error
+                  li= error
           .control-group
             input.login-field#username(type='text',placeholder='Username',name='username')
             label.login-field-icon.fui-man-16(for='username')

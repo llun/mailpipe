@@ -4,14 +4,21 @@ var User = require('../models/user');
 
 var UserRoute = {
   register: function (req, res) {
-    var email = req.body.email;
-
-    var password = req.body.password;
-    var confirm = req.body.confirm;
-
-    // Validate email and password
-
-    res.send('Hello, World');
+    User.register(req.body, function (err, user) {
+      if (err) {
+        var errors = [];
+        for (var key in err.errors) {
+          errors.push(err.errors[key].type);
+        }
+        req.flash('error', errors);
+        res.redirect('/register.html');
+      }
+      else {
+        req.flash('info', 'Register success');
+        res.redirect('/login.html');
+      }
+    });
+    
   },
 
   forget: function (req, res) {

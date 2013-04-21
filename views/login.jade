@@ -18,6 +18,9 @@ block content
           if flash.error && flash.error.length > 0
             .alert.alert-error
               = flash.error[0]
+          if flash.info
+            .alert.alert-success
+              = flash.info
           .control-group
             input.login-field#username(type='text',placeholder='Username',name='username')
             label.login-field-icon.fui-man-16(for='username')
