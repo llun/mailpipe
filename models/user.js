@@ -68,12 +68,13 @@ User.register = function (user, cb) {
               value: user.confirm } } })
   }
   else {
+    // Move this to schema validator by extract new object which can make it as stub.
     q.all([
-      q.nfcall(User.findOne.bind(User), { username: user.username }),
-      q.nfcall(User.findOne.bind(User), { email: user.email })
+      q.nfcall(User.findOne.bind(User), { username: user.username.toLowerCase() }),
+      q.nfcall(User.findOne.bind(User), { email: user.email.toLowerCase() })
       ])
-      .spread(function (u1, u2) {
-        if (u1) {
+      .spread(function (userByUsername, userByEmail) {
+        if (userByUsername) {
           return cb ({ message: 'Validation failed',
                        name: 'ValidationError',
                        errors: { username: 
@@ -83,7 +84,7 @@ User.register = function (user, cb) {
                             type: 'Duplicate username',
                             value: user.username } } })
         }
-        else if (u2) {
+        else if (userByEmail) {
           return cb ({ message: 'Validation failed',
                        name: 'ValidationError',
                        errors: { password: 
