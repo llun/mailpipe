@@ -119,7 +119,7 @@ app.get('/services/update.html', security.requiredLogin, routes.update);
 app.post('/users/register', UserRoute.register);
 
 // Service actions
-app.post('/services/add', security.requiredLogin, ServiceRoute.add);
+app.post('/services', security.requiredLogin, ServiceRoute.add);
 
 // Gateway page
 app.get('/register.html', routes.register);

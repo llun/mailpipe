@@ -4,18 +4,10 @@ var Service = require('../models/service');
 
 var ServiceRoute = {
   add: function (req, res) {
-    var input = {
-      name: req.body.name,
-      target: req.body.target,
-      authentication: {
-        type: req.body['authentication.type'],
-        key: req.body['authentication.key'],
-        pass: req.body['authentication.pass']
-      }
-    }
-    var service = new Service(input);
+    req.body.user = req.user;
+    var service = new Service(req.body);
     service.save(function (err) {
-      if (err) { return res.json(err); }
+      if (err) { return res.json(400, err); }
       return res.json(service);
     });
   }

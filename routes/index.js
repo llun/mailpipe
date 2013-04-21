@@ -1,8 +1,8 @@
 module.exports = {
   // Mocking pages
   index: function (req, res) {
-
-    res.render('index');
+    if (req.user) res.redirect('/main.html');
+    else res.render('index');
   },
   forget: function (req, res) {
     res.render('forget');
