@@ -28,7 +28,10 @@ var schema = mongoose.Schema({
         return this.authentication.type !== 'none' ? val.length > 0 : true;
       }, 'required' ] }
   },
-  target: { type: String, required: true },
+  target: { type: String, required: true, validate: [
+    function (val) {
+      return /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@\?\^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/.test(val);
+    }, 'Invalid URL'] },
   timestamp: { type: Date, default: Date.now }
 });
 
