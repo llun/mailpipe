@@ -11,45 +11,6 @@ block inner-content
     .span3
       a.btn.btn-block.btn-large.service-add(href='/services/add.html') Add new service
       ul.service-list
-        li
-          .toggle(style='float: right')
-            label.toggle-radio(for='service1-on') ON
-              span.knob-on
-            input#service1-on(type='radio',name='service1',value='on',checked='checked')
-            label.toggle-radio(for='service1-off') OFF
-              span.knob-off
-            input#service1-off(type='radio',name='service1',value='off')
-          label.service-label Service1
-          .service-info
-            span.service-received 13 received
-            span.service-sent 3 sent
-            span.service-error 10 error
-        li.selected
-          .toggle(style='float: right')
-            label.toggle-radio(for='service2-on') ON
-              span.knob-on
-            input#service2-on(type='radio',name='service2',value='on')
-            label.toggle-radio(for='service2-off') OFF
-              span.knob-off
-            input#service2-off(type='radio',name='service2',value='off',checked='checked')
-          label.service-label Service2
-          .service-info
-            span.service-received 0 received
-            span.service-sent 0 sent
-            span.service-error 0 error
-        li
-          .toggle(style='float: right')
-            label.toggle-radio(for='service3-on') ON
-              span.knob-on
-            input#service3-on(type='radio',name='service3',value='on',checked='checked')
-            label.toggle-radio(for='service3-off') OFF
-              span.knob-off
-            input#service3-off(type='radio',name='service3',value='off')
-          label.service-label Service3
-          .service-info
-            span.service-received 0 received
-            span.service-sent 0 sent
-            span.service-error 0 error
     .span9.service-detail
       .row-fluid
         .span9
