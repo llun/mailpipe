@@ -36,6 +36,7 @@ var schema = mongoose.Schema({
     function (val) {
       return /^(http|https):\/\/[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@\?\^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/.test(val);
     }, 'Invalid URL'] },
+  enable: { type: Boolean, default: true, required: true },
   timestamp: { type: Date, default: Date.now }
 });
 
@@ -49,7 +50,7 @@ schema.set('toObject', {
 
 var Service = database.model('Service', schema);
 Service.add = function (user, input, cb) {
-  input.user = user;
+  input.user = user._id.toString();
   Service.findOne({ name: input.name }, function (err, service) {
     if (service) {
       return cb ({ message: 'Validation failed',
@@ -65,6 +66,10 @@ Service.add = function (user, input, cb) {
       Service.create(input, cb);
     }
   });
+}
+
+Service.all = function (user, cb) {
+  Service.find({ user: user._id.toString() }).exec(cb);
 }
 
 module.exports = Service;

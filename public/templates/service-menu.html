@@ -1,0 +1,29 @@
+<li>
+  <div class="toggle <% if(!enable) {%>toggle-off<%}%>" style="float: right;">
+    <label class="toggle-radio" for="<%=name%>-on">
+      ON
+      <span class="knob-on"></span>
+    </label>
+    <%if (enable) {%>
+    <input id="<%=name%>-on" type="radio" name="<%=name%>" value="on" checked="checked">
+    <%} else {%>
+    <input id="<%=name%>-on" type="radio" name="<%=name%>" value="on">
+    <%}%>
+    <label class="toggle-radio" for="<%=name%>-off">
+      OFF
+      <span class="knob-off"></span>
+    </label>
+    <%if (!enable) {%>
+    <input id="<%=name%>-off" type="radio" name="<%=name%>" value="off" checked="checked">
+    <%} else {%>
+    <input id="<%=name%>-off" type="radio" name="<%=name%>" value="off">
+    <%}%>
+    
+  </div>
+  <label class="service-label"><%=name%></label>
+  <div class="service-info">
+    <span class="service-received">13 received</span>
+    <span class="service-sent">3 sent</span>
+    <span class="service-error">10 errors</span>
+  </div>
+</li>

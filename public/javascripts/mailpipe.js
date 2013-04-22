@@ -2,8 +2,105 @@ var Service = Backbone.Model.extend({
   idAttribute: '_id',
   urlRoot: '/services',
   parse: function (res) {
-    console.log (res);
     return res;
+  }
+});
+
+var Services = Backbone.Collection.extend({
+  model: Service,
+  url: '/services',
+  parse: function (res) {
+    return res;
+  }
+});
+
+var RemoteTemplateView = Backbone.View.extend({
+  render: function (cb) {
+    var self = this;
+    var createElement = function () {
+      var data = self.model.toJSON();
+
+      var html = RemoteTemplateView.cache[self.templateFile](data);
+      self.$el.html(html);
+
+      cb(self);
+    }
+
+    if (!RemoteTemplateView.cache[self.templateFile]) {
+      $.get('/templates/' + self.templateFile + '.html', function (data) {
+        RemoteTemplateView.cache[self.templateFile] = _.template(data);
+        createElement();
+      });
+    }
+    else {
+      createElement();
+    }
+  }
+});
+
+RemoteTemplateView.cache = {};
+
+var ServiceMenuView = RemoteTemplateView.extend({
+  templateFile: 'service-menu',
+  events: {
+    'click input': 'toggleRadio'
+  },
+
+  toggleRadio: function (e) {
+    var val = $(e.target).val();
+
+    this.$('.toggle').toggleClass('toggle-off');
+  }
+});
+
+var ServicesView = Backbone.View.extend({
+  el: 'body',
+  events: {
+    'click .service-list li': 'selectService'
+  },
+  services: new Services,
+  initialize: function () {
+    var self = this;
+
+    var services = this.services;
+    this.listenTo(services, 'add', this.addService);
+    this.listenTo(services, 'remove', this.removeService);
+    this.listenTo(services, 'reset', this.resetServices);
+
+    services.fetch({ reset: true });
+  },
+
+  // Services actions
+  selectService: function (e) {
+    if ($(e.target).is('li') || /service\-/.test($(e.target).attr('class'))) {
+      this.$('.service-list li').removeClass('selected');
+      $(e.currentTarget).addClass('selected');
+    }
+  },
+
+  addService: function (service) {
+    var self = this;
+    
+    var cb = function () {};
+    var lastArgument = arguments[arguments.length - 1];
+    if (typeof lastArgument === 'function') {
+      cb = lastArgument;
+    }
+
+    var view = new ServiceMenuView({ model: service });
+    view.render(function (cv) {
+      self.$('.service-list').append(cv.el);
+      cb();
+    });
+  },
+  removeService: function () {
+
+  },
+  resetServices: function () {
+    var services = this.services;
+
+    self.$('.service-list').empty();
+    async.forEachSeries(services.models, this.addService);
   }
 });
 

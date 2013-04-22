@@ -33,6 +33,8 @@ describe('Service', function () {
         stub.restore();
 
         should.not.exist(err);
+        service.enable.should.be.true;
+        
         done();
       });
 

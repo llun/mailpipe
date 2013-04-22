@@ -8,7 +8,15 @@ var ServiceRoute = {
       if (err) { return res.json(400, err); }
       return res.json(service);
     });
+  },
+
+  list: function (req, res) {
+    Service.all(req.user, function (err, services) {
+      if (err) { return res.json(400, err); }
+      return res.json(services);
+    });
   }
+
 };
 
 (function () {
