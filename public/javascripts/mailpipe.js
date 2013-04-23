@@ -21,7 +21,7 @@ var RemoteTemplateView = Backbone.View.extend({
       var data = self.model.toJSON();
 
       var html = RemoteTemplateView.cache[self.templateFile](data);
-      self.el = html;
+      self.setElement(html);
 
       cb(self);
     }
