@@ -3,11 +3,11 @@ var chai = require('chai'),
     should = require('chai').should(),
     sinon = require('sinon'),
     sinon_chai = require('sinon-chai'),
-    chai_as_prmised = require('chai-as-promised'),
+    chai_as_promised = require('chai-as-promised'),
     q = require('q');
 
 chai.use(sinon_chai);
-chai.use(chai_as_prmised);
+chai.use(chai_as_promised);
 
 var Service = require('../models/service');
 

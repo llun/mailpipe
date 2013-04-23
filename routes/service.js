@@ -1,6 +1,8 @@
-var q = require('q');
+var _ = require('underscore'),
+    q = require('q');
 
-var Service = require('../models/service');
+var Service = require('../models/service'),
+    User = require('../models/user');
 
 var ServiceRoute = {
   add: function (req, res) {
@@ -13,7 +15,26 @@ var ServiceRoute = {
   list: function (req, res) {
     Service.all(req.user, function (err, services) {
       if (err) { return res.json(400, err); }
-      return res.json(services);
+
+      var actions = _.chain(services)
+        .map(function (service) { return service.user; })
+        .uniq()
+        .map(function (id) { return q.nfcall(User.findOne.bind(User), { _id: id }); })
+        .value();
+      q.all(actions).then(function (users) {
+        var output = [];
+        var userMap = _.groupBy(users, 
+          function (user) {
+            return user._id;
+          });
+        _.each(services, function (service) {
+          var json = service.toJSON();
+          json.user = userMap[service.user][0];
+          output.push(json);
+        });
+
+        return res.json(output);        
+      });
     });
   }
 
