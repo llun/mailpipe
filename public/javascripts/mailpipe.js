@@ -21,7 +21,7 @@ var RemoteTemplateView = Backbone.View.extend({
       var data = self.model.toJSON();
 
       var html = RemoteTemplateView.cache[self.templateFile](data);
-      self.$el.html(html);
+      self.el = html;
 
       cb(self);
     }
@@ -53,6 +53,10 @@ var ServiceMenuView = RemoteTemplateView.extend({
   }
 });
 
+var ServiceDetailView = RemoteTemplateView.extend({
+  templateFile: 'service-info'
+});
+
 var ServicesView = Backbone.View.extend({
   el: 'body',
   events: {
@@ -75,6 +79,15 @@ var ServicesView = Backbone.View.extend({
     if ($(e.target).is('li') || /service\-/.test($(e.target).attr('class'))) {
       this.$('.service-list li').removeClass('selected');
       $(e.currentTarget).addClass('selected');
+
+      var service = this.services.get($(e.currentTarget).attr('service'));
+      
+      var view = new ServiceDetailView({ model: service });
+      view.render(function (cv) {
+        this.$('.service-detail').empty();
+        this.$('.service-detail').append(cv.el)
+      });
+      
     }
   },
 
