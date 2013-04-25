@@ -29,7 +29,7 @@ var ServiceRoute = {
           });
         _.each(services, function (service) {
           var json = service.toJSON();
-          json.user = userMap[service.user][0];
+          json.user = userMap[service.user][0].toObject();
           output.push(json);
         });
 
