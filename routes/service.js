@@ -40,9 +40,11 @@ var ServiceRoute = {
 
   update: function (req, res) {
     var serviceID = req.param('id');
-    console.log (serviceID);
-    console.log (req.body);
-    res.send('Hello, World');
+
+    Service.update(serviceID, req.body, function (err, service) {
+      if (err) { return res.json(400, err); }
+      return res.json(service);
+    });
   }
 
 };
