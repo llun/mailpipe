@@ -36,6 +36,13 @@ var ServiceRoute = {
         return res.json(output);        
       });
     });
+  },
+
+  update: function (req, res) {
+    var serviceID = req.param('id');
+    console.log (serviceID);
+    console.log (req.body);
+    res.send('Hello, World');
   }
 
 };

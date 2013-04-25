@@ -119,8 +119,9 @@ app.get('/services/update.html', security.requiredLogin, routes.update);
 app.post('/users/register', UserRoute.register);
 
 // Service actions
-app.get('/services', security.requiredLogin, ServiceRoute.list);
+app.get ('/services', security.requiredLogin, ServiceRoute.list);
 app.post('/services', security.requiredLogin, ServiceRoute.add);
+app.put ('/services/:id', security.requiredLogin, ServiceRoute.update);
 
 // Gateway page
 app.get('/register.html', routes.register);

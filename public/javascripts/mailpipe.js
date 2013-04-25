@@ -47,9 +47,15 @@ var ServiceMenuView = RemoteTemplateView.extend({
   },
 
   toggleRadio: function (e) {
-    var val = $(e.target).val();
-
     this.$('.toggle').toggleClass('toggle-off');
+    
+    var val = $(e.target).val();
+    if (val === 'off') { this.model.set('enable', true); }
+    else { this.model.set('enable', false); }
+    this.model.save(null, {
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
+      }});
   }
 });
 

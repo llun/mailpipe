@@ -109,5 +109,45 @@ describe('Service', function () {
 
   });
 
+  describe('#update', function () {
+
+    it ('should not update permanent fields', function (done) {
+      var stub = sinon.stub(Service, 'findOneAndUpdate').callsArg(2);
+
+      Service.update('service1', 
+        {
+          _id: 'service1',
+          __v: 0,
+          name: 'new_name',
+          user: {
+            username: 'user1',
+            email: 'user1@email.com',
+            password: 'password',
+            _id: 'user1',
+            __v: 0,
+            timestamp: '2013-04-22T13:15:21.563Z'
+          },
+          enable: true,
+          authentication: { type: 'basic', key: 'key', pass: 'value'},
+          target: 'http://service.com/target',
+          timestamp: '2013-04-22T13:15:21.563Z'
+        }, function (err, service) {
+          var secondArgument = stub.args[0][1];
+          secondArgument.should.deep.equal({
+            $set: {
+              name: 'new_name',
+              enable: true,
+              target: 'http://service.com/target',
+              authentication: { type: 'basic', key: 'key', pass: 'value'}
+            }
+          });
+
+          stub.restore();
+          done();
+        });
+    });
+
+  });
+
 
 });

@@ -72,4 +72,16 @@ Service.all = function (user, cb) {
   Service.find({ user: user._id.toString() }).exec(cb);
 }
 
+Service.update = function (id, service, cb) {
+  var filterFields = {
+    $set: {
+      target: service.target,
+      name: service.name,
+      authentication: service.authentication,
+      enable: service.enable
+    }
+  }
+  Service.findOneAndUpdate({ _id: id }, filterFields, cb);
+}
+
 module.exports = Service;

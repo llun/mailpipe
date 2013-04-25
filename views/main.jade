@@ -9,6 +9,7 @@ block script
 block inner-content
   .row-fluid
     .span3
+      input(type='hidden',id='csrf',name='csrf',value='#{token}')
       a.btn.btn-block.btn-large.service-add(href='/services/add.html') Add new service
       ul.service-list
     .span9.service-detail
