@@ -66,7 +66,8 @@ var ServiceDetailView = RemoteTemplateView.extend({
 var ServicesView = Backbone.View.extend({
   el: 'body',
   events: {
-    'click .service-list li': 'selectService'
+    'click .service-list li': 'selectService',
+    'click #delete-service': 'removeService'
   },
   services: new Services,
   initialize: function () {
@@ -74,7 +75,7 @@ var ServicesView = Backbone.View.extend({
 
     var services = this.services;
     this.listenTo(services, 'add', this.addService);
-    this.listenTo(services, 'remove', this.removeService);
+    this.listenTo(services, 'destroy', this.fetchService);
     this.listenTo(services, 'reset', this.resetServices);
 
     services.fetch({ reset: true });
@@ -82,11 +83,14 @@ var ServicesView = Backbone.View.extend({
 
   // Services actions
   selectService: function (e) {
+    var self = this;
+
     if ($(e.target).is('li') || /service\-/.test($(e.target).attr('class'))) {
       this.$('.service-list li').removeClass('selected');
       $(e.currentTarget).addClass('selected');
 
       var service = this.services.get($(e.currentTarget).attr('service'));
+      this.selected = service;
       
       var view = new ServiceDetailView({ model: service });
       view.render(function (cv) {
@@ -96,7 +100,6 @@ var ServicesView = Backbone.View.extend({
       
     }
   },
-
   addService: function (service) {
     var self = this;
     
@@ -113,13 +116,23 @@ var ServicesView = Backbone.View.extend({
     });
   },
   removeService: function () {
-
+    var confirmDelete = confirm('Do you really want to delete service `' + this.selected.get('name') + '`');
+    if (confirmDelete) {
+      this.selected.destroy({
+        beforeSend: function (xhr) {
+          xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
+        }
+      });
+    }
   },
   resetServices: function () {
     var services = this.services;
 
     self.$('.service-list').empty();
     async.forEachSeries(services.models, this.addService);
+  },
+  fetchService: function () {
+    this.services.fetch({ reset: true });
   }
 });
 

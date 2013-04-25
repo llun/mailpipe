@@ -119,9 +119,10 @@ app.get('/services/update.html', security.requiredLogin, routes.update);
 app.post('/users/register', UserRoute.register);
 
 // Service actions
-app.get ('/services', security.requiredLogin, ServiceRoute.list);
-app.post('/services', security.requiredLogin, ServiceRoute.add);
-app.put ('/services/:id', security.requiredLogin, ServiceRoute.update);
+app.get   ('/services', security.requiredLogin, ServiceRoute.list);
+app.post  ('/services', security.requiredLogin, ServiceRoute.add);
+app.put   ('/services/:id', security.requiredLogin, ServiceRoute.update);
+app.delete('/services/:id', security.requiredLogin, ServiceRoute.destroy);
 
 // Gateway page
 app.get('/register.html', routes.register);

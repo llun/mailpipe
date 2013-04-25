@@ -45,6 +45,14 @@ var ServiceRoute = {
       if (err) { return res.json(400, err); }
       return res.json(service);
     });
+  },
+
+  destroy: function (req, res) {
+    var serviceID = req.param('id');
+    Service.remove({ _id: serviceID }, function(err) {
+      if (err) { return res.json(400, err); }
+      return res.json({ success: true });
+    });
   }
 
 };
