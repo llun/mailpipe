@@ -16,12 +16,6 @@ module.exports = {
   profile: function (req, res) {
     res.render('profile');
   },
-  add: function (req, res) {
-    res.render('new-service');
-  },
-  update: function (req, res) {
-    res.render('update-service');
-  },
 
   // User gateway pages
   login: function (req, res) {

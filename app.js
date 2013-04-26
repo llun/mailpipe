@@ -112,13 +112,14 @@ app.get('/', routes.index);
 // Authorize page
 app.get('/profile.html', security.requiredLogin, routes.profile);
 app.get('/main.html', security.requiredLogin, routes.main);
-app.get('/services/add.html', security.requiredLogin, routes.add);
-app.get('/services/update.html', security.requiredLogin, routes.update);
 
 // User actions
 app.post('/users/register', UserRoute.register);
 
 // Service actions
+app.get   ('/services/add.html', security.requiredLogin, ServiceRoute.addPage);
+app.get   ('/services/:name/update.html', security.requiredLogin, ServiceRoute.updatePage);
+
 app.get   ('/services', security.requiredLogin, ServiceRoute.list);
 app.post  ('/services', security.requiredLogin, ServiceRoute.add);
 app.put   ('/services/:id', security.requiredLogin, ServiceRoute.update);

@@ -5,6 +5,20 @@ var Service = require('../models/service'),
     User = require('../models/user');
 
 var ServiceRoute = {
+  addPage: function (req, res) {
+    res.render('new-service');
+  },
+
+  updatePage: function (req, res) {
+    var name = req.param('name');
+    var user = req.user;
+
+    Service.findOne({ user: user._id, name: name }, function (err, service) {
+      if (err) { return res.json(400, err); }
+      return res.render('update-service', service);
+    });
+  },
+
   add: function (req, res) {
     Service.add(req.user, req.body, function (err, service) {
       if (err) { return res.json(400, err); }

@@ -8,32 +8,35 @@ block inner-content
         .control-group
           label.control-label(for='service-name') Service Name
           .controls
-            input(type='text',id='service-name',name='service-name')
+            input(type='text',id='service-name',name='service-name',value='#{name}')
         .control-group
           label.control-label(for='service-authentication-type') Authentication Type
           .controls
-            select(id='service-authentication-type',name='service-authentication-type',value='no',tabindex=1)
+            select.span6(id='service-authentication-type',name='authentication.type',value='#{authentication.type}')
+              option(value='none',selected='selected') No Authentication
+              option(value='basic') Basic Authentication
               option(value='oauth') OAuth
-              option(value='no',selected='selected') No Authentication
-        .control-group
-          label.control-label(for='service-oauth-key') OAuth Key
+        .control-group.authentication-info.key-field
+          label.control-label(for='service-key') Key
           .controls
-            input(type='text',id='service-oauth-key',name='service-oauth-key')
-        .control-group
-          label.control-label(for='service-oauth-secret') OAuth Secret
+            input(type='text',id='service-key',name='authentication.key',value='#{authentication.key}')
+        .control-group.authentication-info.pass-field
+          label.control-label(for='service-pass') Pass
           .controls
-            input(type='text',id='service-oauth-secret',name='service-oauth-secret')
+            input(type='password',id='service-pass',name='authentication.pass',value='#{authentication.pass}')
         .control-group
-          label.control-label(for='service-url') URL
+          label.control-label(for='service-url') Target
           .controls
-            input(type='text',id='service-url',name='service-url')
+            input(type='text',id='service-url',name='target',value='#{target}')
         .control-group
           .controls
+            input(type='hidden',id='id',name='id',value='#{_id}')
+            input(type='hidden',id='csrf',name='_csrf',value='#{token}')
             ul
               li
                 button.btn Update
               li
-                button.btn.btn-danger Cancel
+                a.btn.btn-danger(href='/main.html') Cancel
 
 block script
   script(type='text/javascript')
