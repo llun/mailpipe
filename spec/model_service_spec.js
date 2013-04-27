@@ -149,5 +149,50 @@ describe('Service', function () {
 
   });
 
+  describe('#isValidAddress', function () {
+
+    var userStub = sinon.stub();
+    var serviceStub = sinon.stub();
+
+    beforeAll(function () {
+
+    });
+
+    afterAll(function() {
+
+    });
+
+
+    it ('should return true for address that has user and service in database', function (done) {
+      Service.isValidAddress('user+service@mailpipe.me', function (err, found) {
+        found.should.be.true;
+
+        done();
+      });
+    });
+
+    it ('should return false for address that doesn\'t have plus sign', function (done) {
+      Service.isValidAddress('noplussign@mailpipe.me', function (err, found) {
+        found.should.be.false;
+
+        done();
+      });
+    });
+
+    it ('should return false for address that does\'t have user in database', function (done) {
+      Service.isValidAddress('nouser+service@mailpipe.me', function (err, found) {
+        found.should.be.false;
+
+        done();
+      });
+    });
+
+    it ('should return false for address that doesn\'t have service in database', function (done) {
+      Service.isValidAddress('user+noservice@mailpipe.me', function (err, found) {
+
+      });
+    });
+
+  });
 
 });

@@ -84,4 +84,8 @@ Service.update = function (id, service, cb) {
   Service.findOneAndUpdate({ _id: id }, filterFields, cb);
 }
 
+Service.isValidAddress = function (address, cb) {
+
+}
+
 module.exports = Service;
