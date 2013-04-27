@@ -136,12 +136,10 @@ var ServicesView = Backbone.View.extend({
   }
 });
 
-var AddServiceView = Backbone.View.extend({
-  el: 'body',
+var ServiceFormView = Backbone.View.extend({
   events: {
-    'change #service-authentication-type': 'toggleAuthenticationInfo',
     'click #cancel': 'back',
-    'submit form': 'addService'
+    'change #service-authentication-type': 'toggleAuthenticationInfo'
   },
 
   toggleAuthenticationInfo: function (e) {
@@ -165,7 +163,18 @@ var AddServiceView = Backbone.View.extend({
   },
 
   back: function (e) {
+    e.preventDefault();
+
     window.location = '/main.html';
+  }
+});
+
+var AddServiceView = ServiceFormView.extend({
+  el: 'body',
+  events: function () {
+    return _.extend({}, ServiceFormView.prototype.events, {
+      'submit form': 'addService'
+    });
   },
 
   addService: function (e) {
@@ -210,4 +219,8 @@ var AddServiceView = Backbone.View.extend({
         self.$('.alert').show();
       }});
   }
+});
+
+var UpdateServiceView = Backbone.View.extend({
+
 });

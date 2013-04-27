@@ -6,7 +6,7 @@ var Service = require('../models/service'),
 
 var ServiceRoute = {
   addPage: function (req, res) {
-    res.render('new-service');
+    res.render('add-service');
   },
 
   updatePage: function (req, res) {

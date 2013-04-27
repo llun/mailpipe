@@ -12,10 +12,21 @@ block inner-content
         .control-group
           label.control-label(for='service-authentication-type') Authentication Type
           .controls
-            select.span6(id='service-authentication-type',name='authentication.type',value='#{authentication.type}')
-              option(value='none',selected='selected') No Authentication
-              option(value='basic') Basic Authentication
-              option(value='oauth') OAuth
+            select.span6(id='service-authentication-type',name='authentication.type')
+              if authentication.type === 'none'
+                option(value='none',selected) No Authentication
+              else
+                option(value='none') No Authentication
+
+              if authentication.type === 'basic'
+                option(value='basic',selected) Basic Authentication
+              else
+                option(value='basic') Basic Authentication
+
+              if authentication.type === 'oauth'
+                option(value='oauth',selected) OAuth
+              else
+                option(value='oauth') OAuth
         .control-group.authentication-info.key-field
           label.control-label(for='service-key') Key
           .controls
