@@ -8,7 +8,7 @@ block inner-content
         .control-group
           label.control-label(for='service-name') Service Name
           .controls
-            input(type='text',id='service-name',name='service-name',value='#{name}')
+            input.span6(type='text',id='service-name',name='service-name',value='#{name}')
         .control-group
           label.control-label(for='service-authentication-type') Authentication Type
           .controls
@@ -35,20 +35,20 @@ block inner-content
           .control-group.authentication-info.pass-field(style='display:block;')
             label.control-label(for='service-pass') Pass
             .controls
-              input(type='password',id='service-pass',name='authentication.pass',value='#{authentication.pass}')
+              input.span6(type='password',id='service-pass',name='authentication.pass',value='#{authentication.pass}')
         else
           .control-group.authentication-info.key-field
             label.control-label(for='service-key') Key
             .controls
-              input(type='text',id='service-key',name='authentication.key',value='#{authentication.key}')
+              input.span6(type='text',id='service-key',name='authentication.key',value='#{authentication.key}')
           .control-group.authentication-info.pass-field
             label.control-label(for='service-pass') Pass
             .controls
-              input(type='password',id='service-pass',name='authentication.pass',value='#{authentication.pass}')
+              input.span6(type='password',id='service-pass',name='authentication.pass',value='#{authentication.pass}')
         .control-group
           label.control-label(for='service-url') Target
           .controls
-            input(type='text',id='service-url',name='target',value='#{target}')
+            input.span6(type='text',id='service-url',name='target',value='#{target}')
         .control-group
           .controls
             input(type='hidden',id='service-enable',name='enable',value='#{enable}')
