@@ -143,6 +143,10 @@ var ServiceFormView = Backbone.View.extend({
   },
 
   toggleAuthenticationInfo: function (e) {
+    // Clear authentication form when changing authentication type
+    this.$('#service-key').val('');
+    this.$('#service-pass').val('');
+
     if (e.val === 'none') { $('.authentication-info').hide(); }
     else {
       if (e.val === 'basic') {
@@ -221,6 +225,56 @@ var AddServiceView = ServiceFormView.extend({
   }
 });
 
-var UpdateServiceView = Backbone.View.extend({
+var UpdateServiceView = ServiceFormView.extend({
+  el: 'body',
+  events: function () {
+    return _.extend({}, ServiceFormView.prototype.events, {
+      'submit form': 'updateService'
+    });
+  },
 
+  updateService: function(e) {
+    e.preventDefault();
+
+    var self = this;
+    var service = new Service({
+      _id: self.$('#service-id').val(),
+      name: self.$('#service-name').val(),
+      target: self.$('#service-url').val(),
+      authentication: {
+        type: self.$('#service-authentication-type').val(),
+        key: self.$('#service-key').val(),
+        pass: self.$('#service-pass').val()
+      },
+      enable: self.$('#service-enable').val()
+    });
+    service.save(null, { wait: true,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
+      },
+      success: function (model,result,xhr) {
+        window.location = '/main.html';
+      },
+      error: function (model,xhr,options) {
+        self.$('.alert').html('');
+        var list = document.createElement('ul');
+
+        var response = xhr.responseJSON;
+        for (var key in response.errors) {
+          var field = response.errors[key];
+          var child = document.createElement('li');
+
+          if (field.type === 'required') {
+            child.textContent = field.path + ' is required';
+          }
+          else {
+            child.textContent = field.type;
+          }
+          $(list).append(child);
+          console.log (field);
+        }
+        self.$('.alert').append(list);
+        self.$('.alert').show();
+      }});
+  }
 });
