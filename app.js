@@ -161,7 +161,7 @@ smtp.on('dataReady', function (connection, callback) {
   callback(null, 'D1');
 });
 smtp.on('validateRecipient', function (connection, email, callback) {
-  var domain = 'llun.in.th';
+  var domain = 'mailpipe.me';
   var pattern = new RegExp('@' + domain + '$');
   if (pattern.test(email)) {
     callback(null, 'A2');
