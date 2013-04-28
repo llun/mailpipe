@@ -2,7 +2,8 @@ var fs = require('fs'),
     mongoose = require('mongoose'),
     nconf = require('nconf'),
     path = require('path'),
-    q = require('q');
+    q = require('q'),
+    scrypt = require('scrypt');
 
 jake.addListener('complete', function () {
   process.exit(0);
@@ -25,6 +26,15 @@ namespace('db', function () {
       });
   });
 
+  desc('Drop database');
+  task('clean', { async: true }, function () {
+    var database = require('./models/database');
+
+    database.db.dropDatabase((function () {
+      console.log ('done');
+    }));
+  });
+
   desc('Drop database and seed all data');
   task('clean_seed', { async: true }, function () {
     var database = require('./models/database');
@@ -40,7 +50,8 @@ namespace('db', function () {
     var database = require('./models/database');
     var User = require('./models/user');
 
-    q.nfcall(User.create.bind(User), [ { username: 'firstuser', email: 'firstuser@mailpipe.com', password: 'password' }])
+    var password = scrypt.passwordHashSync('password', 0.1);
+    q.nfcall(User.create.bind(User), [ { username: 'firstuser', email: 'firstuser@mailpipe.com', password: password }])
       .then(function () {
         return q.nfcall(mongoose.disconnect.bind(mongoose));
       })

@@ -1,4 +1,4 @@
-var crypto = require('crypto'),
+var scrypt = require('scrypt'),
     database = require('./database'),
     mongoose = require('mongoose'),
     q = require('q');
@@ -12,12 +12,7 @@ var schema = mongoose.Schema({
     set: function (val) {
       return val.toLowerCase();
     }},
-  password: { type: String, required: true,
-    set: function (val) {
-      var sha = crypto.createHash('sha256');
-      sha.update(val);
-      return sha.digest('hex');
-    }},
+  password: { type: String, required: true },
   timestamp: { type: Date, default: Date.now }
 });
 
@@ -41,14 +36,10 @@ var User = database.model('User', schema);
 User.authenticate = function (username, password, cb) {
   User.findOne({ username: username }, function (err, user) {
     if (user) {
-      var sha = crypto.createHash('sha256');
-      sha.update(password);
-      if (sha.digest('hex') === user.password) {
-        cb(null, user);
-      }
-      else {
-        cb({ message: 'Wrong password' });
-      }
+      scrypt.verifyHash(user.password, password, function (err, result) {
+        if (err) { return cb({ message: 'Wrong password' }); }
+        return cb(null, user);
+      });
     }
     else {
       cb({ message: 'No user found' });
@@ -70,10 +61,11 @@ User.register = function (user, cb) {
   else {
     // Move this to schema validator by extract new object which can make it as stub.
     q.all([
-      q.nfcall(User.findOne.bind(User), { username: user.username.toLowerCase() }),
-      q.nfcall(User.findOne.bind(User), { email: user.email.toLowerCase() })
+        q.nfcall(User.findOne.bind(User), { username: user.username.toLowerCase() }),
+        q.nfcall(User.findOne.bind(User), { email: user.email.toLowerCase() }),
+        q.nfcall(scrypt.passwordHash.bind(scrypt), user.password, 0.1)
       ])
-      .spread(function (userByUsername, userByEmail) {
+      .spread(function (userByUsername, userByEmail, passwordHash) {
         if (userByUsername) {
           return cb ({ message: 'Validation failed',
                        name: 'ValidationError',
@@ -95,6 +87,7 @@ User.register = function (user, cb) {
                             value: user.username } } });
         }
         else {
+          user.password = passwordHash;
           return User.create(user, cb);
         }
       });

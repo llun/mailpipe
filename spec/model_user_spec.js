@@ -1,11 +1,14 @@
 var chai = require('chai'),
-    crypto = require('crypto'),
+    scrypt = require('scrypt'),
     should = require('chai').should(),
     sinon = require('sinon'),
     sinon_chai = require('sinon-chai'),
-    q = require('q');
+    chai_as_promised = require('chai-as-promised'),
+    q = require('q'),
+    _ = require('underscore');
 
 chai.use(sinon_chai);
+chai.use(chai_as_promised);
 
 require('mocha-as-promised')();
 
@@ -14,24 +17,6 @@ var User = require('../models/user');
 describe('User', function () {
 
   describe('#save', function () {
-
-    it ('should hash password before save', function (done) {
-
-      var user = new User({
-        username: 'test',
-        email: 'sample@mail.com',
-        password: 'password'
-      });
-
-      var stub = sinon.stub(user.collection, 'insert', function (user, options, callback) {
-        user.password.should.not.equal('password');
-        stub.restore();
-
-        done();
-      });
-
-      user.save();
-    });
 
     it ('should lowercase username before save', function (done) {
       var user = new User({
@@ -130,6 +115,44 @@ describe('User', function () {
 
   });
 
+  describe('#register', function () {
+
+    var findStub = null;
+    var createStub = null;
+
+    before(function () {
+      findStub = sinon.stub(User, 'findOne');
+      findStub.withArgs({ username: 'user' }).callsArgWith(1, null, { username: 'user', password: 'hash', email: 'user@mail.com' });
+      findStub.withArgs({ email: 'user@mail.com' }).callsArgWith(1, null, { username: 'user', password: 'hash', email: 'user@mail.com' });
+      findStub.callsArg(1);
+
+      createStub = sinon.stub(User, 'create', function (user, cb) {
+        var registeredUser = _.clone(user);
+        registeredUser._id = 'id';
+        cb(null, registeredUser);
+      });
+
+    });
+
+    after(function () {
+      findStub.restore();
+      createStub.restore();
+    });
+
+    it ('should hash password before register', function () {
+      var user = {
+        username: 'newuser',
+        email: 'newuser@mail.com',
+        password: 'password',
+        confirm: 'password'
+      }
+      return q.nfcall(User.register.bind(User), user).should.be.fulfilled.then(function (registeredUser) {
+        registeredUser.password.should.not.equal('password');
+      });
+    });
+
+  });
+
   describe('#authenticate', function () {
 
     describe('user exist', function () {
@@ -139,7 +162,7 @@ describe('User', function () {
         stub = sinon.stub(User, 'findOne').callsArgWith(1, null, {
           username: 'test',
           email: 'sample@mail.com',
-          password: crypto.createHash('sha256').update('password').digest('hex')
+          password: scrypt.passwordHashSync('password', 0.1)
         });
       });
 
