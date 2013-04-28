@@ -10,6 +10,7 @@ var express = require('express')
   , moment = require('moment')
   , path = require('path')
   , fs = require('fs')
+  , crypto = require('crypto')
   , simplesmtp = require('simplesmtp')
   , _ = require('underscore');
     
@@ -149,17 +150,20 @@ smtp.listen(process.env.SMTP || 2525, function () {
   console.log ('Redirector server listen on port ' + (process.env.SMTP || 2525));
 });
 smtp.on('startData', function (connection) {
-  console.log ('Message from:', connection.from);
-  console.log ('Message to:', connection.to);
-  connection.saveStream = fs.createWriteStream("/tmp/message.txt");
+  var tmpDirectory = process.env.TMP_DIR || '/tmp';
+  var hash = crypto.createHash('sha1');
+  hash.update(connection.from + new Date().getTime());
+  connection.filename = hash.digest('hex') + '.mail';
+  connection.saveStream = fs.createWriteStream(path.join(tmpDirectory, connection.filename));
 });
 smtp.on('data', function (connection, chunk) {
   connection.saveStream.write(chunk);
 });
 smtp.on('dataReady', function (connection, callback) {
   connection.saveStream.end();
-  console.log("Incoming message saved to /tmp/message.txt");
-  callback(null, 'D1');
+
+  console.log("Incoming message saved to " + connection.filename);
+  callback(null, 'MP3');
 });
 smtp.on('validateRecipient', function (connection, email, callback) {
   var domain = process.env.DOMAIN || 'mailpipe.me';
@@ -168,7 +172,7 @@ smtp.on('validateRecipient', function (connection, email, callback) {
       callback(err);
     }
     else {
-      callback(null, 'A2');
+      callback(null, 'MP2');
     }
   });
 });
