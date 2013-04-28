@@ -20,6 +20,7 @@
     "passport": "0.1.x",
     "passport-local": "0.1.x",
     "q": "0.8.x",
+    "scrypt": "1.x",
     "simplesmtp": "0.2.x",
     "underscore": "1.4.x",
     "underscore.string": "2.3.x"

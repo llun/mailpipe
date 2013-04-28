@@ -1,6 +1,5 @@
 var database = require('./database'),
     mongoose = require('mongoose'),
-    util = require('util'),
     _s = require('underscore.string'),
     q = require('q');
 

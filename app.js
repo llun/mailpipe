@@ -17,7 +17,8 @@ _.str = require('underscore.string');
 
 var security = require('./security');
 
-var User = require('./models/user');
+var Service = require('./models/service'),
+    User = require('./models/user');
 
 var UserRoute = require('./routes/user'),
     ServiceRoute = require('./routes/service');
@@ -162,11 +163,12 @@ smtp.on('dataReady', function (connection, callback) {
 });
 smtp.on('validateRecipient', function (connection, email, callback) {
   var domain = process.env.DOMAIN || 'mailpipe.me';
-  var pattern = new RegExp('@' + domain + '$');
-  if (pattern.test(email)) {
-    callback(null, 'A2');
-  }
-  else {
-    callback(new Error('Not allow recipient, we redirect to other webservice only, not email'));
-  }
+  Service.isValidAddress(email, domain, function (err) {
+    if (err) {
+      callback(err);
+    }
+    else {
+      callback(null, 'A2');
+    }
+  });
 });
