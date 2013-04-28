@@ -26,11 +26,12 @@
     "underscore.string": "2.3.x"
   },
   "devDependencies": {
-    "chai": "1.5.x",
-    "sinon": "1.6.x",
-    "sinon-chai": "2.3.x",
-    "chai-as-promised": "3.2.x",
-    "mocha-as-promised": "1.2.x"
+    "chai": "*",
+    "sinon": "*",
+    "sinon-chai": "*",
+    "chai-as-promised": "*",
+    "mocha-as-promised": "*",
+    "nock": "*"
   },
   "engines": {
     "node": "0.10.x",
