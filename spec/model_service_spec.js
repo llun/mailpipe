@@ -9,7 +9,10 @@ var chai = require('chai'),
 chai.use(sinon_chai);
 chai.use(chai_as_promised);
 
-var Service = require('../models/service');
+require('mocha-as-promised')();
+
+var Service = require('../models/service'),
+    User = require('../models/user');
 
 describe('Service', function () {
 
@@ -151,46 +154,43 @@ describe('Service', function () {
 
   describe('#isValidAddress', function () {
 
-    var userStub = sinon.stub();
-    var serviceStub = sinon.stub();
+    var userStub = null;
+    var serviceStub = null;
 
-    beforeAll(function () {
+    before(function () {
+      userStub = sinon.stub(User, 'findOne');
+      userStub.withArgs({ username: 'user' }).callsArgWith(1, null, { _id: 'user', username: 'user' });
+      userStub.callsArg(1);
 
+      serviceStub = sinon.stub(Service, 'findOne');
+      serviceStub.withArgs({ name: 'service' }).callsArgWith(1, null, { _id: 'service', name: 'service' });
+      serviceStub.callsArg(1);
     });
 
-    afterAll(function() {
-
+    after(function() {
+      userStub.restore();
+      serviceStub.restore();
     });
 
 
     it ('should return true for address that has user and service in database', function (done) {
-      Service.isValidAddress('user+service@mailpipe.me', function (err, found) {
-        found.should.be.true;
-
-        done();
-      });
+      return q.nfcall(Service.isValidAddress.bind(Service), 'user+service@mailpipe.me', 'mailpipe.me')
+        .should.be.fulfilled;
     });
 
-    it ('should return false for address that doesn\'t have plus sign', function (done) {
-      Service.isValidAddress('noplussign@mailpipe.me', function (err, found) {
-        found.should.be.false;
-
-        done();
-      });
+    it ('should return false for address that doesn\'t have plus sign', function () {
+      return q.nfcall(Service.isValidAddress.bind(Service), 'noplussign@mailpipe.me', 'mailpipe.me')
+        .should.be.rejected.with(Error, 'Invalid e-mail address');
     });
 
-    it ('should return false for address that does\'t have user in database', function (done) {
-      Service.isValidAddress('nouser+service@mailpipe.me', function (err, found) {
-        found.should.be.false;
-
-        done();
-      });
+    it ('should return false for address that does\'t have user in database', function () {
+      return q.nfcall(Service.isValidAddress.bind(Service), 'nouser+service@mailpipe.me', 'mailpipe.me')
+        .should.be.rejected.with(Error, 'User not found');
     });
 
-    it ('should return false for address that doesn\'t have service in database', function (done) {
-      Service.isValidAddress('user+noservice@mailpipe.me', function (err, found) {
-
-      });
+    it ('should return false for address that doesn\'t have service in database', function () {
+      return q.nfcall(Service.isValidAddress.bind(Service), 'user+noservice@mailpipe.me', 'mailpipe.me')
+        .should.be.rejected.with(Error, 'Service not found');
     });
 
   });

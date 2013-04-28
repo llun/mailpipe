@@ -1,6 +1,10 @@
 var database = require('./database'),
     mongoose = require('mongoose'),
-    util = require('util');
+    util = require('util'),
+    _s = require('underscore.string'),
+    q = require('q');
+
+var User = require('./user');
 
 var schema = mongoose.Schema({
   name: { type: String, required: true, index: true, 
@@ -84,8 +88,27 @@ Service.update = function (id, service, cb) {
   Service.findOneAndUpdate({ _id: id }, filterFields, cb);
 }
 
-Service.isValidAddress = function (address, cb) {
+Service.isValidAddress = function (address, domain, cb) {
+  var pattern = new RegExp('^[\\w]+\\+[\\w]+@' + domain + '$', 'i');
+  if (!pattern.test(address)) { return cb(new Error('Invalid e-mail address')); }
 
+  var fragments = _s.strLeft(address, '@').split('+');
+  var user = fragments[0];
+  var service = fragments[1];
+
+  q.nfcall(User.findOne.bind(User), { username: user })
+    .then(function (user) {
+      if (user) { return q.nfcall(Service.findOne.bind(Service), { name: service }); }
+      return cb(new Error('User not found'));
+    })
+    .then(function (service) {
+      if (service) { return cb(); }
+      else { return cb(new Error('Service not found')); }
+    })
+    .fail(function (err) {
+      return cb(err);
+    })
+    .done();
 }
 
 module.exports = Service;
