@@ -2,7 +2,7 @@ module.exports = {
   // Mocking pages
   index: function (req, res) {
     if (req.user) res.redirect('/main.html');
-    else res.render('index');
+    else res.redirect('http://mailpipe.kickoffpages.com/');
   },
   forget: function (req, res) {
     res.render('forget');
