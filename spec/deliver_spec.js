@@ -2,10 +2,15 @@ var chai = require('chai'),
     should = chai.should(),
     sinon = require('sinon'),
     sinon_chai = require('sinon-chai'),
+    chai_as_promised = require('chai-as-promised'),
     _ = require('underscore'),
-    nock = require('nock');
+    nock = require('nock'),
+    q = require('q');
 
 chai.use(sinon_chai);
+chai.use(chai_as_promised);
+
+require("mocha-as-promised")();
 
 var User = require('../models/user'),
     Service = require('../models/service'),
@@ -30,21 +35,21 @@ describe('Deliver', function () {
 
       scope = nock('http://llun.in.th')
         .post('/post')
-        .reply(200, '{ success: true }')
+        .reply(200, { success: true })
         .post('/action')
         .reply(404, 'not found');
 
       findUserStub = sinon.stub(User, 'findOne');
-      findUserStub.withArgs({ username: 'user1' }).callsArgWith(1, { _id: 'u1', username: 'user1', email: 'user1@gmail.com' });
-      findUserStub.withArgs({ username: 'user2' }).callsArgWith(1, { _id: 'u2', username: 'user2', email: 'user2@gmail.com' });
-      findUserStub.callsArg(1);
+      findUserStub.withArgs({ username: 'user1' }).callsArgWith(1, null, { _id: 'u1', username: 'user1', email: 'user1@gmail.com' });
+      findUserStub.withArgs({ username: 'user2' }).callsArgWith(1, null, { _id: 'u2', username: 'user2', email: 'user2@gmail.com' });
+      findUserStub.callsArg(1, null, null);
 
       findServiceStub = sinon.stub(Service, 'findOne');
-      findServiceStub.withArgs({ name: 'service1', user: 'u1' }).callsArgWith(1, { _id: 's1', name: 'service1', user: 'u1', target: 'http://llun.in.th/post#1', authentication: 'none' });
-      findServiceStub.withArgs({ name: 'service2', user: 'u1' }).callsArgWith(1, { _id: 's2', name: 'service2', user: 'u1', target: 'http://llun.in.th/post#2', authentication: 'none' });
-      findServiceStub.withArgs({ name: 'service1', user: 'u2' }).callsArgWith(1, { _id: 's3', name: 'service1', user: 'u2', target: 'http://llun.in.th/post#3', authentication: 'none' });
-      findServiceStub.withArgs({ name: 'service2', user: 'u2' }).callsArgWith(1, { _id: 's4', name: 'service2', user: 'u2', target: 'http://llun.in.th/action', authentication: 'none' });
-      findServiceStub.callsArg(1);
+      findServiceStub.withArgs({ name: 'service1', user: 'u1' }).callsArgWith(1, null, { _id: 's1', name: 'service1', user: 'u1', target: 'http://llun.in.th/post', authentication: { type: 'none' } });
+      findServiceStub.withArgs({ name: 'service2', user: 'u1' }).callsArgWith(1, null, { _id: 's2', name: 'service2', user: 'u1', target: 'http://llun.in.th/post', authentication: { type: 'none' } });
+      findServiceStub.withArgs({ name: 'service1', user: 'u2' }).callsArgWith(1, null, { _id: 's3', name: 'service1', user: 'u2', target: 'http://llun.in.th/post', authentication: { type: 'none' } });
+      findServiceStub.withArgs({ name: 'service2', user: 'u2' }).callsArgWith(1, null, { _id: 's4', name: 'service2', user: 'u2', target: 'http://llun.in.th/action', authentication: { type: 'none' } });
+      findServiceStub.callsArg(1, null, null);
 
       createMessageStub = sinon.stub(Message, 'create', function (message, cb) {
         var cloneMessage = _.clone(message);
@@ -62,10 +67,9 @@ describe('Deliver', function () {
       nock.restore();
     });
 
-    it ('should send request to both users', function (done) {
-
-      deliver.send(__dirname + '/sample.mail', 'someone@mail.com', [ 'user1+service1@mailpipe.me', 'user2+service1@mailpipe.me' ],
-        function (err, messages) {
+    it.only ('should send request to both users', function () {
+      return q.nfcall(deliver.send.bind(deliver), __dirname + '/sample.mail', 'someone@mail.com', [ 'user1+service1@mailpipe.me', 'user2+service1@mailpipe.me' ])
+        .then(function (messages) {
           should.exist(messages);
           message.should.have.length(2);
 
@@ -76,10 +80,7 @@ describe('Deliver', function () {
 
           message[0].to.should.equal('s1');
           message[1].to.should.equal('s3');
-
-          done();
         });
-
     });
 
     it ('should send request to both services', function (done) {
@@ -132,7 +133,7 @@ describe('Deliver', function () {
         function (err, messages) {
           should.exist(err);
           should.exist(messages);
-          
+
           messages.should.have.length(2);
 
           done();
