@@ -14,6 +14,7 @@ var Message = require('../models/message'),
 var Deliver = function () {
 
   this.send = function (file, from, rcpts, cb) {
+    cb = cb || function () {};
 
     var targets = _.map(rcpts, function (rcpt) { return _(rcpt).strLeft('@').split('+'); });
     var users = _.map(targets, function (mixes) { return q.nfcall(User.findOne.bind(User), { username: mixes[0] }); });
@@ -42,7 +43,6 @@ var Deliver = function () {
 
           if (!found) {
             // Ignore mail that doesn't found in system
-            // deferred.reject(new Error('Service not found'));
             deferred.resolve(undefined);
           }
           else {

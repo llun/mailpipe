@@ -18,6 +18,7 @@ _.str = require('underscore.string');
 
 var security = require('./security');
 
+var Deliver = require('./deliver');
 var Service = require('./models/service'),
     User = require('./models/user');
 
@@ -142,6 +143,7 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
+var deliver = new Deliver;
 var smtp = simplesmtp.createServer({
   debug: false,
   SMTPBanner: 'Hello, This is redirector'
@@ -161,8 +163,7 @@ smtp.on('data', function (connection, chunk) {
 });
 smtp.on('dataReady', function (connection, callback) {
   connection.saveStream.end();
-
-  console.log("Incoming message saved to " + connection.filename);
+  deliver.send(connection.filename, connection.from, connection.to);
   callback(null, 'MP3');
 });
 smtp.on('validateRecipient', function (connection, email, callback) {
