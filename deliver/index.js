@@ -53,7 +53,7 @@ var Deliver = function () {
             })
             .on('fail', function (data, response) {
               found.success = false;
-              found.error = response.statusCode;
+              found.error = 'Service response: ' + response.statusCode;
               deferred.resolve(found);
             })
             .on('error', function (err) {
