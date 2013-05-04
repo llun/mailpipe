@@ -40,16 +40,26 @@ var Deliver = function () {
         var promises = _.map(founds, function (found) {
           var deferred = q.defer();
 
-          rest.post(found.target)
+          if (!found) {
+            // Ignore mail that doesn't found in system
+            // deferred.reject(new Error('Service not found'));
+            deferred.resolve(undefined);
+          }
+          else {
+            rest.post(found.target)
             .on('success', function (data) {
+              found.success = true;
               deferred.resolve(found);
             })
             .on('fail', function (data, response) {
-              deferred.reject(new Error('Server response: ' + response.statusCode));
+              found.success = false;
+              found.error = response.statusCode;
+              deferred.resolve(found);
             })
             .on('error', function (err) {
               deferred.reject(err);
             });
+          }
 
           return deferred.promise;
         });
@@ -57,13 +67,25 @@ var Deliver = function () {
         return q.all(promises);
       })
       .then(function (mails) {
-        
+        var messages = _.chain(mails).filter(function (mail) { return mail != undefined; })
+          .map(function (mail) {
+            var message = {
+              from: from,
+              to: mail._id,
+              status: mail.success ? Message.STATUS.SENT : Message.STATUS.FAIL,
+              error: mail.error
+            }
+
+            return q.nfcall(Message.create.bind(Message), message);
+          }).value();
+
+        return q.all(messages);
+      })
+      .then(function (messages) {
+        return cb(null, messages);
       })
       .fail(function (err) {
-        console.log (err);
-      })
-      .done(function () {
-        cb();
+        return cb(err);
       });
   }
 
