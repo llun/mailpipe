@@ -10,7 +10,7 @@ var MessageRoute = {
     var limit = req.query.limit || 10;
 
     if (!service) return res.json(404, { error: 'service not found'})
-    Message.find({ to: service }).skip(page * limit).exec(
+    Message.find({ to: service }).skip(page * limit).sort('-timestamp').exec(
       function (err, messages) {
         res.json(messages);
       });

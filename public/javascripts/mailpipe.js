@@ -151,10 +151,19 @@ var ServicesView = Backbone.View.extend({
     }
   },
   resetServices: function () {
+    var self = this;
     var services = this.services;
 
     this.$('.service-list').empty();
-    async.forEachSeries(services.models, this.addService);
+    async.forEachSeries(services.models, this.addService, function (err) {
+      var els = self.$('.service-list li');
+      if (els.length > 0) {
+        els[0].click();
+      }
+      else {
+        window.location = '/services/add.html';
+      }
+    });
   },
   fetchService: function () {
     this.services.fetch({ reset: true });
@@ -169,7 +178,6 @@ var ServicesView = Backbone.View.extend({
       cb = lastArgument;
     }
 
-    console.log (self.$('#mails'));
     var view = new MessageListItemView({ model: message });
     view.render(function (cv) {
       self.$('#mails').append(cv.el);
