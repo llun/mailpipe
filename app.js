@@ -155,8 +155,8 @@ smtp.on('startData', function (connection) {
   var tmpDirectory = process.env.TMP_DIR || '/tmp';
   var hash = crypto.createHash('sha1');
   hash.update(connection.from + new Date().getTime());
-  connection.filename = hash.digest('hex') + '.mail';
-  connection.saveStream = fs.createWriteStream(path.join(tmpDirectory, connection.filename));
+  connection.filename = path.join(tmpDirectory, hash.digest('hex') + '.mail');
+  connection.saveStream = fs.createWriteStream(connection.filename);
 });
 smtp.on('data', function (connection, chunk) {
   connection.saveStream.write(chunk);
