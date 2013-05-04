@@ -14,6 +14,21 @@ var Services = Backbone.Collection.extend({
   }
 });
 
+var Message = Backbone.Model.extend({
+  idAttribute: '_id',
+  parse: function (res) {
+    return res;
+  }
+})
+
+var Messages = Backbone.Collection.extend({
+  model: Message,
+  url: '/messages',
+  parse: function (res) {
+    return res;
+  }
+});
+
 var RemoteTemplateView = Backbone.View.extend({
   render: function (cb) {
     var self = this;
@@ -63,6 +78,10 @@ var ServiceDetailView = RemoteTemplateView.extend({
   templateFile: 'service-info'
 });
 
+var MessageListItemView = RemoteTemplateView.extend({
+  templateFile: 'mail-list-item'
+});
+
 var ServicesView = Backbone.View.extend({
   el: 'body',
   events: {
@@ -70,6 +89,7 @@ var ServicesView = Backbone.View.extend({
     'click #delete-service': 'removeService'
   },
   services: new Services,
+  messages: new Messages,
   initialize: function () {
     var self = this;
 
@@ -79,6 +99,10 @@ var ServicesView = Backbone.View.extend({
     this.listenTo(services, 'reset', this.resetServices);
 
     services.fetch({ reset: true });
+
+    var messages = this.messages;
+    this.listenTo(messages, 'add', this.addMessage);
+    this.listenTo(messages, 'reset', this.resetMessages);
   },
 
   // Services actions
@@ -96,8 +120,9 @@ var ServicesView = Backbone.View.extend({
       view.render(function (cv) {
         this.$('.service-detail').empty();
         this.$('.service-detail').append(cv.el)
+
+        self.messages.fetch({ reset: true, data: { service: service.id, page: 0 } });
       });
-      
     }
   },
   addService: function (service) {
@@ -128,11 +153,34 @@ var ServicesView = Backbone.View.extend({
   resetServices: function () {
     var services = this.services;
 
-    self.$('.service-list').empty();
+    this.$('.service-list').empty();
     async.forEachSeries(services.models, this.addService);
   },
   fetchService: function () {
     this.services.fetch({ reset: true });
+  },
+
+  addMessage: function (message) {
+    var self = this;
+    
+    var cb = function () {};
+    var lastArgument = arguments[arguments.length - 1];
+    if (typeof lastArgument === 'function') {
+      cb = lastArgument;
+    }
+
+    console.log (self.$('#mails'));
+    var view = new MessageListItemView({ model: message });
+    view.render(function (cv) {
+      self.$('#mails').append(cv.el);
+      cb();
+    });
+  },
+  resetMessages: function () {
+    var messages = this.messages;
+
+    this.$('#mails').empty();
+    async.forEachSeries(messages.models, this.addMessage);
   }
 });
 

@@ -23,7 +23,8 @@ var Service = require('./models/service'),
     User = require('./models/user');
 
 var UserRoute = require('./routes/user'),
-    ServiceRoute = require('./routes/service');
+    ServiceRoute = require('./routes/service'),
+    MessageRoute = require('./routes/message');
 
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy;
@@ -127,6 +128,9 @@ app.get   ('/services', security.requiredLogin, ServiceRoute.list);
 app.post  ('/services', security.requiredLogin, ServiceRoute.add);
 app.put   ('/services/:id', security.requiredLogin, ServiceRoute.update);
 app.delete('/services/:id', security.requiredLogin, ServiceRoute.destroy);
+
+// Messages actions
+app.get   ('/messages', security.requiredLogin, MessageRoute.list);
 
 // Gateway page
 app.get('/register.html', routes.register);
