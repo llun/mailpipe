@@ -13,10 +13,7 @@ module.exports = {
   main: function (req, res) {
     res.render('main');
   },
-  profile: function (req, res) {
-    res.render('profile');
-  },
-
+  
   // User gateway pages
   login: function (req, res) {
     res.render('login');

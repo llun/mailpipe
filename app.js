@@ -114,11 +114,11 @@ app.locals._ = _;
 app.get('/', routes.index);
 
 // Authorize page
-app.get('/profile.html', security.requiredLogin, routes.profile);
-app.get('/main.html', security.requiredLogin, routes.main);
+app.get   ('/profile.html', security.requiredLogin, UserRoute.profile);
+app.get   ('/main.html', security.requiredLogin, routes.main);
 
 // User actions
-app.post('/users/register', UserRoute.register);
+app.post  ('/users/register', UserRoute.register);
 
 // Service actions
 app.get   ('/services/add.html', security.requiredLogin, ServiceRoute.addPage);

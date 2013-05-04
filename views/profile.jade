@@ -6,22 +6,27 @@ block inner-content
       h2 Profile
       form.form-horizontal
         .control-group
+          label.control-label(for='username') Username
+          .controls
+            input.span9(type='text',id='username',name='username',disabled,value='#{username}')
+            span.fui-man-16.form-field-icon
+        .control-group
           label.control-label(for='email') Email
           .controls
-            input.span9(type='text',id='email',name='email')
+            input.span9(type='text',id='email',name='email',tabindex='1',value='#{email}')
             span.fui-mail-16.form-field-icon
         hr
         .control-group
           label.control-label(for='password') Password
           .controls
-            input.span9(type='text',id='password',name='password')
+            input.span9(type='text',id='password',name='password',tabindex='2')
             span.fui-lock-16.form-field-icon
         .control-group
           label.control-label(for='confirm') Confirm Password
           .controls
-            input.span9(type='text',id='confirm',name='confirm')
+            input.span9(type='text',id='confirm',name='confirm',tabindex='3')
             span.fui-lock-16.form-field-icon
         hr
         .control-group
           .controls
-            button.btn Save
+            button.btn(tabindex='4') Save
