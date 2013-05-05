@@ -10,8 +10,6 @@ var express = require('express')
   , moment = require('moment')
   , path = require('path')
   , fs = require('fs')
-  , crypto = require('crypto')
-  , simplesmtp = require('simplesmtp')
   , _ = require('underscore');
     
 _.str = require('underscore.string');
@@ -110,17 +108,26 @@ app.locals.title = 'MailPipe';
 app.locals.moment = moment;
 app.locals._ = _;
 
-// Welcome page
-app.get('/', routes.index);
-
-// Authorize page
-app.get   ('/profile.html', security.requiredLogin, UserRoute.profile);
+// Application pages
+app.get   ('/', routes.index);
 app.get   ('/main.html', security.requiredLogin, routes.main);
 
-// User actions
-app.post  ('/users/register', UserRoute.register);
+// User action pages and api
+app.get   ('/register.html', UserRoute.registerPage);
+app.get   ('/login.html', UserRoute.loginPage);
+app.get   ('/forget.html', UserRoute.forgetPage);
+app.get   ('/forget-result.html', UserRoute.forgetResultPage);
+app.get   ('/profile.html', security.requiredLogin, UserRoute.profilePage);
 
-// Service actions
+app.post  ('/users/login', passport.authenticate('local',
+            { successRedirect: '/main.html',
+              failureRedirect: '/login.html',
+              failureFlash: true }));
+app.get   ('/users/logout', UserRoute.logout);
+app.post  ('/users/register', UserRoute.register);
+app.post  ('/users/save', UserRoute.save);
+
+// Service action pages and api
 app.get   ('/services/add.html', security.requiredLogin, ServiceRoute.addPage);
 app.get   ('/services/:name/update.html', security.requiredLogin, ServiceRoute.updatePage);
 
@@ -129,55 +136,12 @@ app.post  ('/services', security.requiredLogin, ServiceRoute.add);
 app.put   ('/services/:id', security.requiredLogin, ServiceRoute.update);
 app.delete('/services/:id', security.requiredLogin, ServiceRoute.destroy);
 
-// Messages actions
+// Messages action pages and api
 app.get   ('/messages', security.requiredLogin, MessageRoute.list);
-
-// Gateway page
-app.get('/register.html', routes.register);
-app.get('/forget.html', routes.forget);
-app.get('/forget-result.html', routes.forget_result);
-app.get('/login.html', routes.login);
-app.post('/users/login', passport.authenticate('local',
-  { successRedirect: '/main.html',
-    failureRedirect: '/login.html',
-    failureFlash: true }));
-app.get('/users/logout', routes.logout);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-var deliver = new Deliver;
-var smtp = simplesmtp.createServer({
-  debug: false,
-  SMTPBanner: 'Hello, This is redirector'
-});
-smtp.listen(process.env.SMTP || 2525, function () {
-  console.log ('Redirector server listen on port ' + (process.env.SMTP || 2525));
-});
-smtp.on('startData', function (connection) {
-  var tmpDirectory = process.env.TMP_DIR || '/tmp';
-  var hash = crypto.createHash('sha1');
-  hash.update(connection.from + new Date().getTime());
-  connection.filename = path.join(tmpDirectory, hash.digest('hex') + '.mail');
-  connection.saveStream = fs.createWriteStream(connection.filename);
-});
-smtp.on('data', function (connection, chunk) {
-  connection.saveStream.write(chunk);
-});
-smtp.on('dataReady', function (connection, callback) {
-  connection.saveStream.end();
-  deliver.send(connection.filename, connection.from, connection.to);
-  callback(null, 'MP3');
-});
-smtp.on('validateRecipient', function (connection, email, callback) {
-  var domain = process.env.DOMAIN || 'mailpipe.me';
-  Service.isValidAddress(email, domain, function (err) {
-    if (err) {
-      callback(err);
-    }
-    else {
-      callback(null, 'MP2');
-    }
-  });
-});
+var deliver = new Deliver(process.env.SMTP, process.env.DOMAIN, process.env.TMP_DIR);
+deliver.start();

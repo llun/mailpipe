@@ -1,5 +1,7 @@
-var fs = require('fs'),
+var crypto = require('crypto'),
+    fs = require('fs'),
     rest = require('restler'),
+    simplesmtp = require('simplesmtp'),
     _ = require('underscore'),
     q = require('q');
 
@@ -11,7 +13,50 @@ var Message = require('../models/message'),
     Service = require('../models/service'),
     User = require('../models/user');
 
-var Deliver = function () {
+var Deliver = function (port, domain, fileDirectory) {
+
+  this.port = port || 2525;
+  this.fileDirectory = fileDirectory || '/tmp';
+  this.domain = domain || 'mailpipe.me';
+  this.smtp = null;
+
+  var self = this;
+
+  this.start = function () {
+    var smtp = simplesmtp.createServer({
+      debug: false,
+      SMTPBanner: 'Hello, This is redirector'
+    });
+    smtp.listen(self.port, function () {
+      console.log ('Redirector server listen on port ' + self.port);
+    });
+    smtp.on('startData', function (connection) {
+      var hash = crypto.createHash('sha1');
+      hash.update(connection.from + new Date().getTime());
+      connection.filename = path.join(self.fileDirectory, hash.digest('hex') + '.mail');
+      connection.saveStream = fs.createWriteStream(connection.filename);
+    });
+    smtp.on('data', function (connection, chunk) {
+      connection.saveStream.write(chunk);
+    });
+    smtp.on('dataReady', function (connection, callback) {
+      connection.saveStream.end();
+      self.send(connection.filename, connection.from, connection.to);
+      callback(null, 'MP3');
+    });
+    smtp.on('validateRecipient', function (connection, email, callback) {
+      Service.isValidAddress(email, self.domain, function (err) {
+        if (err) {
+          callback(err);
+        }
+        else {
+          callback(null, 'MP2');
+        }
+      });
+    });
+
+    this.smtp = smtp;
+  }
 
   this.send = function (file, from, rcpts, cb) {
     cb = cb || function () {};

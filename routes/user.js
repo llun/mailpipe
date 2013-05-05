@@ -3,6 +3,29 @@ var q = require('q');
 var User = require('../models/user');
 
 var UserRoute = {
+
+  // Page methods
+  registerPage: function (req, res) {
+    res.render('register');
+  },
+
+  loginPage: function (req, res) {
+    res.render('login');
+  },
+
+  profilePage: function (req, res) {
+    res.render('profile', req.user);
+  },
+
+  forgetPage: function (req, res) {
+    res.render('forget');
+  },
+
+  forgetResultPage: function (req, res) {
+    res.render('forget-result');
+  },
+
+  // Action methods
   register: function (req, res) {
     User.register(req.body, function (err, user) {
       if (err) {
@@ -17,13 +40,19 @@ var UserRoute = {
     
   },
 
-  forget: function (req, res) {
+  logout: function (req, res) {
+    req.logout();
+    res.redirect('/');
+  },
+
+  save: function (req, res) {
 
   },
 
-  profile: function (req, res) {
-    res.render('profile', req.user);
+  forget: function (req, res) {
+
   }
+  
 };
 
 (function () {
