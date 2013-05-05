@@ -30,11 +30,11 @@ var UserRoute = {
     User.register(req.body, function (err, user) {
       if (err) {
         req.flash('error', err);
-        res.redirect('/register.html');
+        res.redirect('/users/register.html');
       }
       else {
         req.flash('info', 'Register success');
-        res.redirect('/login.html');
+        res.redirect('/users/login.html');
       }
     });
     
@@ -43,7 +43,7 @@ var UserRoute = {
   logout: function (req, res) {
     req.logout();
     req.flash('info', 'Logout success');
-    res.redirect('/login.html');
+    res.redirect('/users/login.html');
   },
 
   save: function (req, res) {
@@ -55,7 +55,7 @@ var UserRoute = {
       else {
         req.flash('info', 'Update success');
       }
-      res.redirect('/profile.html');
+      res.redirect('/users/profile.html');
     });
   },
 

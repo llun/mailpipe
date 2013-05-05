@@ -113,15 +113,15 @@ app.get   ('/', routes.index);
 app.get   ('/main.html', security.requiredLogin, routes.main);
 
 // User action pages and api
-app.get   ('/register.html', UserRoute.registerPage);
-app.get   ('/login.html', UserRoute.loginPage);
-app.get   ('/forget.html', UserRoute.forgetPage);
-app.get   ('/forget-result.html', UserRoute.forgetResultPage);
-app.get   ('/profile.html', security.requiredLogin, UserRoute.profilePage);
+app.get   ('/users/register.html', UserRoute.registerPage);
+app.get   ('/users/login.html', UserRoute.loginPage);
+app.get   ('/users/forget.html', UserRoute.forgetPage);
+app.get   ('/users/forget-result.html', UserRoute.forgetResultPage);
+app.get   ('/users/profile.html', security.requiredLogin, UserRoute.profilePage);
 
 app.post  ('/users/login', passport.authenticate('local',
             { successRedirect: '/main.html',
-              failureRedirect: '/login.html',
+              failureRedirect: '/users/login.html',
               failureFlash: true }));
 app.get   ('/users/logout', UserRoute.logout);
 app.post  ('/users/register', UserRoute.register);
