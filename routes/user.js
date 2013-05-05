@@ -46,7 +46,17 @@ var UserRoute = {
   },
 
   save: function (req, res) {
+    var user = req.user;
 
+    var input = req.body;
+    if (input.password != input.confirm) {
+      
+    }
+    User.findOne({ _id: user._id }, function (err, user) {
+      console.log (user);
+    });
+    console.log (req.body);
+    res.redirect('/');
   },
 
   forget: function (req, res) {

@@ -94,4 +94,41 @@ User.register = function (user, cb) {
   }
 }
 
+User.update = function (user, input, cb) {
+  if (input.password !== input.confirm) {
+    return cb ({ message: 'Validation failed',
+                 name: 'ValidationError',
+                 errors: { confirm: 
+                   { message: 'Validator "Invalid confirm password" failed for path confirm with value `' + user.confirm + '`',
+                     name: 'ValidatorError',
+                     path: 'confirm',
+                     type: 'Invalid confirm password',
+                     value: user.confirm } } });
+  }
+  else {
+    q.all([
+      q.nfcall(User.findOne.bind(User), { _id: user._id }),
+      q.nfcall(User.findOne.bind(User), { email: input.email.toLowerCase() }),
+      q.nfcall(scrypt.passwordHash.bind(scrypt), input.password, 0.1)
+      ])
+      .spread(function (currentUser, conflictEmail, passwordHash) {
+        if (conflictEmail) {
+          return cb ({ message: 'Validation failed',
+                       name: 'ValidationError',
+                       errors: { email: 
+                          { message: 'Validator "Invalid email" failed for path email with value `' + user.email + '`',
+                            name: 'ValidatorError',
+                            path: 'email',
+                            type: 'Duplicate email',
+                            value: user.username } } });
+        }
+        else {
+          currentUser.email = input.email;
+          currentUser.password = passwordHash;
+          return currentUser.save(cb);
+        }
+      });
+  }
+}
+
 module.exports = User;

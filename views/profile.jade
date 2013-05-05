@@ -4,11 +4,11 @@ block inner-content
   .row-fluid
     .offset3.span6.profile
       h2 Profile
-      form.form-horizontal
+      form.form-horizontal(action='/users/save',method='post')
         .control-group
           label.control-label(for='username') Username
           .controls
-            input.span9(type='text',id='username',name='username',disabled,value='#{username}')
+            input.span9(type='text',id='username',disabled,value='#{username}')
             span.fui-man-16.form-field-icon
         .control-group
           label.control-label(for='email') Email
@@ -19,14 +19,15 @@ block inner-content
         .control-group
           label.control-label(for='password') Password
           .controls
-            input.span9(type='text',id='password',name='password',tabindex='2')
+            input.span9(type='password',id='password',name='password',tabindex='2')
             span.fui-lock-16.form-field-icon
         .control-group
           label.control-label(for='confirm') Confirm Password
           .controls
-            input.span9(type='text',id='confirm',name='confirm',tabindex='3')
+            input.span9(type='password',id='confirm',name='confirm',tabindex='3')
             span.fui-lock-16.form-field-icon
         hr
         .control-group
           .controls
+            input(type='hidden',name='_csrf',value='#{token}')
             button.btn(tabindex='4') Save

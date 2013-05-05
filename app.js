@@ -125,7 +125,7 @@ app.post  ('/users/login', passport.authenticate('local',
               failureFlash: true }));
 app.get   ('/users/logout', UserRoute.logout);
 app.post  ('/users/register', UserRoute.register);
-app.post  ('/users/save', UserRoute.save);
+app.post  ('/users/save', security.requiredLogin, UserRoute.save);
 
 // Service action pages and api
 app.get   ('/services/add.html', security.requiredLogin, ServiceRoute.addPage);

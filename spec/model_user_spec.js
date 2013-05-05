@@ -151,6 +151,111 @@ describe('User', function () {
       });
     });
 
+    it ('should return error when username already exist', function () {
+      var user = {
+        username: 'user',
+        email: 'newuser@mail.com',
+        password: 'password',
+        confirm: 'password'
+      }
+      return q.nfcall(User.register.bind(User), user)
+        .then(function (registeredUser) {
+          should.not.exist(registeredUser);
+        })
+        .fail(function (err) {
+          should.exist(err);
+          err.message.should.equal('Validation failed');
+        });
+    });
+
+    it ('should return error when email already exist', function () {
+      var user = {
+        username: 'newuser',
+        email: 'user@mail.com',
+        password: 'password',
+        confirm: 'password'
+      }
+      return q.nfcall(User.register.bind(User), user)
+        .then(function (registeredUser) {
+          should.not.exist(registeredUser);
+        })
+        .fail(function (err) {
+          should.exist(err);
+          err.message.should.equal('Validation failed');
+        });
+    });
+
+    it ('should return error when password and confirm is not match', function () {
+      var user = {
+        username: 'newuser',
+        email: 'newuser@mail.com',
+        password: 'password',
+        confirm: 'notmatch'
+      }
+      return q.nfcall(User.register.bind(User), user)
+        .then(function (registeredUser) {
+          should.not.exist(registeredUser);
+        })
+        .fail(function (err) {
+          should.exist(err);
+          err.message.should.equal('Validation failed');
+        });
+    });
+
+  });
+
+  describe('#update', function () {
+
+    var findStub = null;
+
+    before(function () {
+      findStub = sinon.stub(User, 'findOne');
+      findStub.withArgs({ _id: 'user' }).callsArgWith(1, null, { _id: 'user', username: 'user', password: 'hash', email: 'user@mail.com' });
+      findStub.withArgs({ username: 'user' }).callsArgWith(1, null, { _id: 'user', username: 'user', password: 'hash', email: 'user@mail.com' });
+      findStub.withArgs({ email: 'user2@mail.com' }).callsArgWith(1, null, { _id: 'user2', username: 'user2', password: 'hash', email: 'user2@mail.com' });
+      findStub.callsArg(1);
+    });
+
+    after(function () {
+      findStub.restore();
+    });
+
+    it ('should return error when password and confirm is not match', function () {
+      var user = { _id: 'user' };
+      var input = {
+        email: 'newemail@mail.com',
+        password: 'password',
+        confirm: 'confirm'
+      };
+
+      return q.nfcall(User.update.bind(User), user, input)
+        .then(function (updatedUser) {
+          should.not.exist(updatedUser);
+        })
+        .fail(function (err) {
+          should.exist(err);
+          err.message.should.equal('Validation failed');
+        });
+    });
+
+    it.only ('should return error when email is conflicted with other', function () {
+      var user = { _id: 'user', email: 'user@mail.com' };
+      var input = {
+        email: 'user2@mail.com',
+        password: 'password',
+        confirm: 'password'
+      };
+
+      return q.nfcall(User.update.bind(User), user, input)
+        .then(function (updatedUser) {
+          should.not.exist(updatedUser);
+        })
+        .fail(function (err) {
+          should.exist(err);
+          err.message.should.equal('Validation failed');
+        });
+    });
+
   });
 
   describe('#authenticate', function () {
