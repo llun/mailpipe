@@ -1,5 +1,6 @@
 var crypto = require('crypto'),
     fs = require('fs'),
+    path = require('path'),
     rest = require('restler'),
     simplesmtp = require('simplesmtp'),
     _ = require('underscore'),
@@ -64,11 +65,11 @@ var Deliver = function (port, domain, fileDirectory) {
     var targets = _.map(rcpts, function (rcpt) { return _(rcpt).strLeft('@').split('+'); });
     var users = _.map(targets, function (mixes) { return q.nfcall(User.findOne.bind(User), { username: mixes[0] }); });
 
-    var mail = '';
+    var stat = null;
 
-    q.nfcall(fs.readFile, file, { encoding: 'utf8' })
+    q.nfcall(fs.stat, file)
       .then(function (data) {
-        mail = data;
+        stat = data;
         return q.all(users);
       })
       .then(function (founds) {
@@ -91,7 +92,12 @@ var Deliver = function (port, domain, fileDirectory) {
             deferred.resolve(undefined);
           }
           else {
-            rest.post(found.target)
+            rest.post(found.target, {
+              multipart: true,
+              data: {
+                file: rest.file(file, 'raw.mail', stat.size, null, 'text/plain')
+              }
+            })
             .on('success', function (data) {
               found.success = true;
               deferred.resolve(found);
@@ -130,6 +136,7 @@ var Deliver = function (port, domain, fileDirectory) {
         return cb(null, messages);
       })
       .fail(function (err) {
+        console.err (err);
         return cb(err);
       });
   }
