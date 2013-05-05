@@ -273,7 +273,6 @@ var AddServiceView = ServiceFormView.extend({
             child.textContent = field.type;
           }
           $(list).append(child);
-          console.log (field);
         }
         self.$('.alert').append(list);
         self.$('.alert').show();
@@ -327,7 +326,6 @@ var UpdateServiceView = ServiceFormView.extend({
             child.textContent = field.type;
           }
           $(list).append(child);
-          console.log (field);
         }
         self.$('.alert').append(list);
         self.$('.alert').show();

@@ -5,6 +5,18 @@ block inner-content
     .offset3.span6.profile
       h2 Profile
       form.form-horizontal(action='/users/save',method='post')
+        if flash.error && flash.error.length > 0
+          .alert.alert-error(style='display: block;')
+            ul
+              each error in flash.error
+                each item in error.errors
+                  if item.type == 'required'
+                    li #{item.path} is required
+                  else
+                    li #{item.type}
+        if flash.info
+          .alert.alert-success(style='display: block;')
+            = flash.info
         .control-group
           label.control-label(for='username') Username
           .controls

@@ -65,7 +65,7 @@ User.register = function (user, cb) {
         q.nfcall(User.findOne.bind(User), { email: user.email.toLowerCase() }),
         q.nfcall(scrypt.passwordHash.bind(scrypt), user.password, 0.1)
       ])
-      .spread(function (userByUsername, userByEmail, passwordHash) {
+      .spread(function (userByUsername, userByEmail, hashPassword) {
         if (userByUsername) {
           return cb ({ message: 'Validation failed',
                        name: 'ValidationError',
@@ -87,7 +87,7 @@ User.register = function (user, cb) {
                             value: user.username } } });
         }
         else {
-          user.password = passwordHash;
+          user.password = hashPassword;
           return User.create(user, cb);
         }
       });
@@ -95,6 +95,7 @@ User.register = function (user, cb) {
 }
 
 User.update = function (user, input, cb) {
+  var storedUser = null;
   if (input.password !== input.confirm) {
     return cb ({ message: 'Validation failed',
                  name: 'ValidationError',
@@ -108,11 +109,10 @@ User.update = function (user, input, cb) {
   else {
     q.all([
       q.nfcall(User.findOne.bind(User), { _id: user._id }),
-      q.nfcall(User.findOne.bind(User), { email: input.email.toLowerCase() }),
-      q.nfcall(scrypt.passwordHash.bind(scrypt), input.password, 0.1)
+      q.nfcall(User.findOne.bind(User), { email: input.email.toLowerCase() })
       ])
       .spread(function (currentUser, conflictEmail, passwordHash) {
-        if (conflictEmail) {
+        if (conflictEmail && conflictEmail.email !== currentUser.email) {
           return cb ({ message: 'Validation failed',
                        name: 'ValidationError',
                        errors: { email: 
@@ -123,9 +123,17 @@ User.update = function (user, input, cb) {
                             value: user.username } } });
         }
         else {
-          currentUser.email = input.email;
-          currentUser.password = passwordHash;
-          return currentUser.save(cb);
+          storedUser = currentUser;
+          storedUser.email = input.email;
+          if (input.password.length > 0) {
+            scrypt.passwordHash(input.password, 0.1, function (err, hashPassword) {
+              storedUser.password = hashPassword;
+              return storedUser.save(cb);
+            });
+          }
+          else {
+            return storedUser.save(cb);
+          }
         }
       });
   }

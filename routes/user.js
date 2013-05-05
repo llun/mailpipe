@@ -42,21 +42,21 @@ var UserRoute = {
 
   logout: function (req, res) {
     req.logout();
-    res.redirect('/');
+    req.flash('info', 'Logout success');
+    res.redirect('/login.html');
   },
 
   save: function (req, res) {
     var user = req.user;
-
-    var input = req.body;
-    if (input.password != input.confirm) {
-      
-    }
-    User.findOne({ _id: user._id }, function (err, user) {
-      console.log (user);
+    User.update(user, req.body, function (err) {
+      if (err) {
+        req.flash('error', err);
+      }
+      else {
+        req.flash('info', 'Update success');
+      }
+      res.redirect('/profile.html');
     });
-    console.log (req.body);
-    res.redirect('/');
   },
 
   forget: function (req, res) {
