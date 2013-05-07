@@ -30,10 +30,17 @@ var passport = require('passport'),
 var flash = require('connect-flash');
 var MongoStore = require('connect-mongo')(express);
 
+var argv = require('optimist')
+    .alias('w', 'web')
+    .alias('m', 'mail')
+    .alias('c', 'cookie')
+    .alias('d', 'domain')
+    .argv;
+
 var app = express();
 
 // passport and security session
-var cookieSecret = 'tUjurat6';
+var cookieSecret = argv.c || 'tUjurat6';
 passport.use(new LocalStrategy({
     usernameField: 'username',
     passwordField: 'password'
@@ -69,7 +76,7 @@ app.configure('production', function() {
 
 // all environments
 app.configure(function () {
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', argv.w || process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
@@ -143,5 +150,5 @@ http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
 
-var deliver = new Deliver(process.env.SMTP, process.env.DOMAIN, process.env.TMP_DIR);
+var deliver = new Deliver(argv.m || process.env.SMTP, argv.d || process.env.DOMAIN, process.env.TMP_DIR);
 deliver.start();
