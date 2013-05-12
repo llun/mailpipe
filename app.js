@@ -16,7 +16,6 @@ _.str = require('underscore.string');
 
 var security = require('./security');
 
-var Deliver = require('./deliver');
 var Service = require('./models/service'),
     User = require('./models/user');
 
@@ -31,8 +30,7 @@ var flash = require('connect-flash');
 var MongoStore = require('connect-mongo')(express);
 
 var argv = require('optimist')
-    .alias('w', 'web')
-    .alias('m', 'mail')
+    .alias('p', 'port')
     .alias('c', 'cookie')
     .alias('d', 'domain')
     .argv;
@@ -76,7 +74,7 @@ app.configure('production', function() {
 
 // all environments
 app.configure(function () {
-  app.set('port', argv.w || process.env.PORT || 3000);
+  app.set('port', argv.p || process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'jade');
   app.use(express.favicon());
@@ -149,6 +147,3 @@ app.get   ('/messages', security.requiredLogin, MessageRoute.list);
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
-
-var deliver = new Deliver(argv.m || process.env.SMTP, argv.d || process.env.DOMAIN, process.env.TMP_DIR);
-deliver.start();
