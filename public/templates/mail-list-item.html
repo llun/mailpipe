@@ -9,7 +9,7 @@
     <span class="label">From</span>
     <span class="address"><%=from%></span>
   </div>
-  <%if (error) {%>
+  <%if (typeof(error) != 'undefined') {%>
   <div class="error">
       <p><%=error%></p>
   </div>
