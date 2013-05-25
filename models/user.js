@@ -13,6 +13,7 @@ var schema = mongoose.Schema({
       return val.toLowerCase();
     }},
   password: { type: String, required: true },
+  forget: { type: String },
   timestamp: { type: Date, default: Date.now }
 });
 
@@ -137,6 +138,53 @@ User.update = function (user, input, cb) {
         }
       });
   }
+}
+
+User.forget = function (email, cb) {
+
+  User.findOne({ email: email }, function (err, user) {
+    user.forget = User._randomString(10); 
+    console.log(user.forget);
+    user.save (function (err) {
+      cb(err, user);
+    });
+
+  });
+
+}
+
+User.redeem = function (email, forgetcode, cb) {
+
+  User.findOne({ email: email}, function (err, user) {
+    if (user.forget === forgetcode) {
+      user.forget = null;
+      scrypt.passwordHash(User._randomString(10), 0.1, function (err, hash) {
+        user.password = hash;
+        cb(err, user);
+      });
+    }
+  });
+
+}
+
+User._randomString = function (length) {
+  var bits = length * 6;
+  var chars, rand, i, ret;
+  
+  chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-'; 
+  ret = '';
+  
+  // in v8, Math.random() yields 32 pseudo-random bits (in spidermonkey it gives 53)
+  while (bits > 0) {
+    // 32-bit integer
+    rand = Math.floor(Math.random() * 0x100000000); 
+    // base 64 means 6 bits per character, so we use the top 30 bits from rand to give 30/6=5 characters.
+    for (i = 26; i > 0 && bits > 0; i -= 6, bits -= 6) {
+      ret += chars[0x3F & rand >>> i];
+    }
+  }
+  
+  return ret;
 }
 
 module.exports = User;

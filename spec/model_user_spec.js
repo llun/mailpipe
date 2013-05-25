@@ -238,7 +238,7 @@ describe('User', function () {
         });
     });
 
-    it.only ('should return error when email is conflicted with other', function () {
+    it ('should return error when email is conflicted with other', function () {
       var user = { _id: 'user', email: 'user@mail.com' };
       var input = {
         email: 'user2@mail.com',
@@ -323,6 +323,68 @@ describe('User', function () {
       after(function () {
         stub.restore();
       });
+    });
+
+  });
+
+  describe ('#forget', function () {
+
+    var findStub = null;
+    var saveStub = null;
+
+    before(function () {
+      findStub = sinon.stub(User, 'findOne');
+      findStub.withArgs({ email: 'firstuser@email.com' }).callsArgWith(1, null, { username: 'user', password: 'hash', email: 'firstuser@email.com', save: function (cb) { return cb(null); } });
+      findStub.callsArg(1);
+    });
+
+    after(function () {
+      findStub.restore();
+    });
+
+    it ('should generate forget code', function (done) {
+
+      User.forget('firstuser@email.com', function (err, user) {
+        should.exist(user);
+        should.not.exist(err);
+
+        should.exist(user.forget);
+        user.forget.should.not.be.empty;
+        user.forget.should.have.length(10);
+        done();
+      });
+
+    });
+
+  });
+
+  describe.only ('#redeem', function () {
+
+    var findStub = null;
+
+    before(function () {
+      findStub = sinon.stub(User, 'findOne');
+      findStub.withArgs({ email: 'firstuser@email.com' }).callsArgWith(1, null, { username: 'user', password: 'hash', forget: 'forget', email: 'firstuser@email.com', save: function (cb) { return cb(null); }});
+      findStub.callsArg(1);
+    }); 
+
+    after(function () {
+      findStub.restore();
+    });   
+
+    it ('should generate password', function (done) {
+
+      User.redeem('firstuser@email.com','forget', function (err, user) {
+        should.exist(user);
+        should.not.exist(err);
+        
+        should.not.exist(user.forget);
+        user.password.should.not.equal('hash');
+        user.password.should.not.equal('forget');
+
+        done();
+      });    
+  
     });
 
   });
