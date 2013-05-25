@@ -358,13 +358,14 @@ describe('User', function () {
 
   });
 
-  describe.only ('#redeem', function () {
+  describe ('#redeem', function () {
 
     var findStub = null;
 
     before(function () {
       findStub = sinon.stub(User, 'findOne');
       findStub.withArgs({ email: 'firstuser@email.com' }).callsArgWith(1, null, { username: 'user', password: 'hash', forget: 'forget', email: 'firstuser@email.com', save: function (cb) { return cb(null); }});
+      findStub.withArgs({ email: 'seconduser@email.com' }).callsArgWith(1, null, { username: 'user2', password: 'hash', forget: 'forget', email: 'seconduser@email.com', save: function (cb) { return cb(null); }});
       findStub.callsArg(1);
     }); 
 
@@ -372,19 +373,31 @@ describe('User', function () {
       findStub.restore();
     });   
 
-    it ('should generate password', function (done) {
+    it ('should generate password', function () {
+      return q.nfcall(User.redeem.bind(User), 'firstuser@email.com', 'forget')
+        .then(function (user) {
+          should.exist(user);
+          should.not.exist(user.forget);
 
-      User.redeem('firstuser@email.com','forget', function (err, user) {
-        should.exist(user);
-        should.not.exist(err);
-        
-        should.not.exist(user.forget);
-        user.password.should.not.equal('hash');
-        user.password.should.not.equal('forget');
-
-        done();
-      });    
+          user.password.should.not.equal('hash');
+          user.password.should.not.equal('forget');
+        });
   
+    });
+
+    it('should return error when forget password is not match', function () {
+      return q.nfcall(User.redeem.bind(User), 'seconduser@email.com', 'notmatch')
+        .then(function (user) {
+          should.exist(user);
+
+          user.password.should.equal('hash');
+          user.forget.should.equal('forget');
+        })
+        .fail(function (err) {
+          should.exist(err); 
+
+          err.message.should.equal('Forget password is not match');
+        });
     });
 
   });

@@ -144,7 +144,6 @@ User.forget = function (email, cb) {
 
   User.findOne({ email: email }, function (err, user) {
     user.forget = User._randomString(10); 
-    console.log(user.forget);
     user.save (function (err) {
       cb(err, user);
     });
@@ -153,17 +152,30 @@ User.forget = function (email, cb) {
 
 }
 
-User.redeem = function (email, forgetcode, cb) {
+User.redeem = function (email, forgetCode, cb) {
 
-  User.findOne({ email: email}, function (err, user) {
-    if (user.forget === forgetcode) {
-      user.forget = null;
-      scrypt.passwordHash(User._randomString(10), 0.1, function (err, hash) {
-        user.password = hash;
-        cb(err, user);
-      });
-    }
-  });
+  var _user = null;
+  q.nfcall(User.findOne.bind(User), { email: email })
+    .then(function (user) {
+      _user = user;
+      if (user.forget === forgetCode) {
+        user.forget = null;
+        return q.nfcall(scrypt.passwordHash.bind(scrypt), User._randomString(10), 0.1);
+      }
+      else {
+        throw new Error('Forget password is not match');
+      }
+    })
+    .then (function (hash) {
+      _user.password = hash;
+      return q.nfcall(_user.save.bind(_user));
+    })
+    .then (function () {
+      return cb(null, _user);
+    })
+    .fail(function (err) {
+      return cb(err, _user);
+    });
 
 }
 
