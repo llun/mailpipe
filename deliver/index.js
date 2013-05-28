@@ -153,7 +153,12 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
             deferred.resolve(undefined);
           }
           else {
-            rest.postJson(found.target, mail)
+            var options = {};
+            if (found.authentication.type === 'basic') {
+              options.username = found.authentication.key,
+              options.password = found.authentication.pass
+            }
+            rest.postJson(found.target, mail, options)
               .on('success', function (data) {
                 found.success = true;
                 deferred.resolve(found);
