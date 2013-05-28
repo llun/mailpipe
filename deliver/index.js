@@ -1,6 +1,7 @@
 var cluster = require('cluster'),
     crypto = require('crypto'),
     fs = require('fs'),
+    mailparser = require('mailparser'),
     path = require('path'),
     rest = require('restler'),
     simplesmtp = require('simplesmtp'),
@@ -10,6 +11,8 @@ var cluster = require('cluster'),
 _.str = require('underscore.string');
 _.mixin(_.str.exports());
 _.str.include('Underscore.string', 'string');
+
+var MailParser = mailparser.MailParser;
 
 var Message = require('../models/message'),
     Service = require('../models/service'),
@@ -51,28 +54,14 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
           d.on('error', function(er) {
             console.error('error', er.stack);
 
-            // Note: we're in dangerous territory!
-            // By definition, something unexpected occurred,
-            // which we probably didn't want.
-            // Anything can happen now!  Be very careful!
-
             try {
-              // make sure we close down within 30 seconds
               var killtimer = setTimeout(function() {
                 process.exit(1);
               }, 30000);
-              // But don't keep the process open just for that!
               killtimer.unref();
-
-              // stop taking new requests.
               server.close();
-
-              // Let the master know we're dead.  This will trigger a
-              // 'disconnect' in the cluster master, and then it will fork
-              // a new worker.
               cluster.worker.disconnect();
             } catch (er2) {
-              // oh well, not much we can do at this point.
               console.error('Error sending 500!', er2.stack);
             }
           });
@@ -124,10 +113,24 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
     var users = _.map(targets, function (mixes) { return q.nfcall(User.findOne.bind(User), { username: mixes[0] }); });
 
     var stat = null;
+    var mail = null;
 
     q.nfcall(fs.stat, file)
       .then(function (data) {
         stat = data;
+
+        var mailparser = new MailParser;
+        var deferred = q.defer();
+
+        mailparser.on('end', function (mail_object) {
+          deferred.resolve(mail_object);
+        });
+        fs.createReadStream(file).pipe(mailparser); 
+
+        return deferred.promise;  
+      })
+      .then(function (mail_object) {
+        mail = mail_object;
         return q.all(users);
       })
       .then(function (founds) {
@@ -150,24 +153,19 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
             deferred.resolve(undefined);
           }
           else {
-            rest.post(found.target, {
-              multipart: true,
-              data: {
-                file: rest.file(file, 'raw.mail', stat.size, null, 'text/plain')
-              }
-            })
-            .on('success', function (data) {
-              found.success = true;
-              deferred.resolve(found);
-            })
-            .on('fail', function (data, response) {
-              found.success = false;
-              found.error = 'Service response: ' + response.statusCode;
-              deferred.resolve(found);
-            })
-            .on('error', function (err) {
-              deferred.reject(err);
-            });
+            rest.postJson(found.target, mail)
+              .on('success', function (data) {
+                found.success = true;
+                deferred.resolve(found);
+              })
+              .on('fail', function (data, response) {
+                found.success = false;
+                found.error = 'Service response: ' + response.statusCode;
+                deferred.resolve(found);
+              })
+              .on('error', function (err) {
+                deferred.reject(err);
+              });
           }
 
           return deferred.promise;
@@ -194,7 +192,6 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
         return cb(null, messages);
       })
       .fail(function (err) {
-        console.err (err);
         return cb(err);
       });
   }
