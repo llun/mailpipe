@@ -43,6 +43,26 @@ describe('Service', function () {
 
     });
 
+    it ('should save url with port successful', function (done) {
+      var service = new Service({
+        name: 'sample',
+        user: 'user1',
+        authentication: { type: 'none' },
+        target: 'http://localhost:3000/mail/create'
+      });
+
+      var stub = sinon.stub(service.collection, 'insert', function (service, options, cb) {
+        cb(null, service);
+      });
+
+      service.save(function (err) {
+        stub.restore();
+
+        should.not.exist(err);
+        done();
+      });
+    });
+
     it ('should error with required key and pass when authentication is not none', function (done) {
       var service = new Service({
         name: 'sample',
