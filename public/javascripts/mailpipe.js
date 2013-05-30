@@ -58,20 +58,18 @@ RemoteTemplateView.cache = {};
 var ServiceMenuView = RemoteTemplateView.extend({
   templateFile: 'service-menu',
   events: {
-    'click input': 'toggleRadio'
+    'switch-change .switch': 'toggleService'
   },
 
-  toggleRadio: function (e) {
-    this.$('.toggle').toggleClass('toggle-off');
-    
-    var val = $(e.target).val();
-    if (val === 'off') { this.model.set('enable', true); }
-    else { this.model.set('enable', false); }
+  toggleService: function (e, data) {
+    var value = data.value;
+    this.model.set('enable', value);
     this.model.save(null, {
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
       }});
   }
+
 });
 
 var ServiceDetailView = RemoteTemplateView.extend({
@@ -110,8 +108,8 @@ var ServicesView = Backbone.View.extend({
     var self = this;
 
     if ($(e.target).is('li') || /service\-/.test($(e.target).attr('class'))) {
-      this.$('.service-list li').removeClass('selected');
-      $(e.currentTarget).addClass('selected');
+      this.$('.service-list li').removeClass('active');
+      $(e.currentTarget).addClass('active');
 
       var service = this.services.get($(e.currentTarget).attr('service'));
       this.selected = service;
@@ -159,6 +157,8 @@ var ServicesView = Backbone.View.extend({
       var els = self.$('.service-list li');
       if (els.length > 0) {
         els[0].click();
+
+        this.$("[data-toggle='switch']").wrap('<div class="switch" />').parent().bootstrapSwitch();
       }
       else {
         window.location = '/services/add.html';

@@ -48,21 +48,16 @@ body {
   .content {
 
     a.service-add {
-      border-radius: 6px 6px 0 0;
-      background-color: @belize-hole;
+      border-radius: 0;
+      border-right: 4px solid @belize-hole;
+      background-color: @peter-river;
       font-weight: bolder;
     }
 
     ul.service-list {
-      background-color: @cloud;
-      list-style: none;
+      padding: 0;
 
-      margin-top: 0px;
-      margin-left: 0px;
-
-      overflow: hidden;
-
-      border-radius: 0 0 6px 6px;
+      border-radius: 0;
 
       label.service-label {
         font-size: 16.5px;
@@ -75,21 +70,27 @@ body {
 
       li {
         padding: 10px;
-        border-top: 1px solid @silver;
-        border-bottom: 1px solid @silver;
+        margin-bottom: 0;
+        border-right: 4px solid @silver;
 
-        &.selected {
-          background-color: @silver;
+        &.active{
+          color: white;
+          background-color: @concrete;
+          border-right: 4px solid @asbestos;
+
+          &:last-child {
+            border-bottom: 4px solid @asbestos;
+          }
         }
 
-        &:first-child {
-          border-top: none;
-          border-bottom: 1px solid @silver;
-        };
+        & > .switch {
+          float: right;
+          height: 30px;
+        }
+
         &:last-child {
-          border-top: 1px solid @silver;
-          border-bottom: none;
-        };
+          border-bottom: 4px solid @silver;
+        }
 
       }
     }
