@@ -19,6 +19,17 @@
 @concrete: #95A5A6;
 @asbestos: #7F8C8D;
 
+.btn {
+  border-radius: 0;
+  border-bottom: 2px solid @concrete;
+  border-right: 2px solid @concrete;
+
+  &.btn-danger {
+    border-bottom-color: @pomegranate;
+    border-right-color: @pomegranate;
+  }
+}
+
 body {
   padding-top: 60px;
 
@@ -126,6 +137,10 @@ body {
 
     .service-detail{ 
 
+      h3 {
+        margin: 10px 0 4px 0;
+      }
+
       ul.actions {
         list-style: none;
         margin-top: 10px;
@@ -169,8 +184,11 @@ body {
           }
 
           .error p {
+            padding-left: 10px;
+            font-size: 14px;
+            font-weight: bolder;
             color: @alizarin;
-            margin-top: 6px;
+            margin-top: 2px;
             margin-bottom: 0;
           }
         }
