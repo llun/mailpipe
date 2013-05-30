@@ -27,22 +27,50 @@ body {
   }
 
   .navbar {
-    .container-fluid {
-      background-color: @wet-asphalt;
+
+    border-bottom: 4px solid @midnight-blue;
+
+    .nav ul {
+      border-radius: 0;
+    
+      a:hover {
+        border-radius: 0;
+        background: white;
+        color: @wet-asphalt;
+      }
+
+      li {
+        border-right: 4px solid @midnight-blue;
+      }
+
+      li:first-child {
+        border-radius: 0;
+      }
+
+      li:last-child {
+        border-radius: 0;
+        border-bottom: 4px solid @midnight-blue;
+      }
     }
 
-    .user-actions {
-      right: 0;
-      left: auto;
+    .nav > li > a {
+      border-bottom: none;
+      border-radius: 0;
+
+      &:hover, &:focus {
+        background: white;
+        color: @wet-asphalt;
+      }
     }
 
-    .nav > li > ul:before {
-      left: 60px;
+    .nav.pull-right > li > a {
+      border-radius: 0;
     }
 
-    .nav > li > ul {
-      z-index: 100;
+    .brand {
+      border-bottom: none;
     }
+
   }
 
   .content {
