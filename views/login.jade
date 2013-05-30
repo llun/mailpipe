@@ -8,7 +8,7 @@ block content
     .row
       .span2.offset3.login-box
         .icon
-          img(src='/images/illustrations/mail.png',alt='Welcome to MailPipe')
+          img(src='/images/icons/Mail.png',alt='Welcome to MailPipe')
           h4
             | Welcome to 
             small MailPipe
@@ -22,11 +22,11 @@ block content
             .alert.alert-success
               = flash.info
           .control-group
-            input.login-field#username(type='text',placeholder='Username',name='username')
-            label.login-field-icon.fui-man-16(for='username')
+            input#username(type='text',placeholder='Username',name='username')
+            i.input-icon.fui-user
           .control-group
-            input.login-field#password(type='password',placeholder='Password',name='password')
-            label.login-field-icon.fui-lock-16(for='password')
+            input#password(type='password',placeholder='Password',name='password')
+            i.input-icon.fui-lock
           input(type='hidden',name='_csrf',value='#{token}')
-          button.btn.btn-large.btn-block(type='submit') Login
+          button.btn.btn-primary.btn-large.btn-block(type='submit') Login
           a.login-link(href='/users/forget.html') Lost your password?

@@ -1,3 +1,36 @@
+@box-border: 2px solid #bdc3c7;
+@box-border-pain: 2px solid #ecf0f1;
+@form-border: 1px solid #bdc3c7;
+@form-border-focus: 1px solid #34495e;
+
+@btn-border: 2px solid #7f8c8d;
+@btn-primary-border: 2px solid #16a085;
+
+@error-color: #c0392b;
+
+.btn {
+  border-radius: 0;
+
+  border-right: @btn-border;
+  border-bottom: @btn-border;
+
+  &.btn-primary {
+    border-right: @btn-primary-border;
+    border-bottom: @btn-primary-border;
+  }
+}
+
+.alert {
+  border-radius: 0;
+  padding: 8px 35px 8px 14px;
+  font-weight: bolder;
+
+  &.alert-error {
+    color: @error-color;
+  }
+
+}
+
 body {
   background-color: #34495E;
   padding-top: 60px;
@@ -39,28 +72,64 @@ body {
   }
 
   .login-form {
+    background-color: #ecf0f1;
+    padding: 20px;
+    border-top: @box-border-pain;
+    border-left: @box-border-pain;
+    border-bottom: @box-border;
+    border-right: @box-border;
+
+    .control-group {
+      & > i {
+        background-color: transparent;
+        border-radius: 0;
+      }
+    }
+
+
     input[type='text'],
     input[type='password'] {
+      border-radius: 0;
+      border-top: none;
+      border-right: none;
+      border-left: @form-border;
+      border-bottom: @form-border;
+
       width: 100%;
+      padding: 8px 0px;
     }
 
     input[type='text']:focus,
     input[type='password']:focus {
-      border: 2px solid #34495E;
-
-      & + .login-field-icon {
-        color: #34495E;
-      }
+      border-left: @form-border-focus;
+      border-bottom: @form-border-focus;
     }
 
-    @media all and (max-width: 768px) {
+    a.login-link {
+      display: block;
+      margin-top: 4px;
+      text-align: center; 
+    }
+
+  }
+
+}
+
+@media all and (max-width: 768px) {
+
+  body {
+    .login-form {
       margin-top:20px;
 
       &::before {
         display: none;
       };
-    }
 
+      input[type='text'],
+      input[type='password'] {
+        margin-top: 0;
+      }
+    }
   }
 
 }

@@ -6,7 +6,7 @@ var argv = require('optimist')
     .alias('f', 'fork')
     .argv;
 
-var totalProcess = argv.f || 4;
+var totalProcess = argv.f || 1;
 
 if (cluster.isMaster) {
   for (var i = 0; i < totalProcess; i++) {
