@@ -143,6 +143,10 @@ User.update = function (user, input, cb) {
 User.forget = function (email, cb) {
 
   User.findOne({ email: email }, function (err, user) {
+    if (!user) {
+      return cb(new Error('Email not found'));
+    }
+
     user.forget = User._randomString(10); 
     user.save (function (err) {
       cb(err, user);

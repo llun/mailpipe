@@ -60,7 +60,16 @@ var UserRoute = {
   },
 
   forget: function (req, res) {
-
+    var email = req.body.email;
+    User.forget(email, function (err, user) {
+      if (err) {
+        req.flash('error', err.message);
+        res.redirect('/users/forget.html');
+      }
+      else {
+        res.redirect('/users/forget-result.html'); 
+      }
+    });
   }
   
 };

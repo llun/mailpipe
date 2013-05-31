@@ -356,6 +356,18 @@ describe('User', function () {
 
     });
 
+    it ('should return error when there is no email in system', function (done) {
+      
+      User.forget('seconduser@email.com', function (err, user) {
+        should.not.exist(user);
+        should.exist(err);
+
+        err.message.should.equal('Email not found');
+        done();
+      });
+
+    });
+
   });
 
   describe ('#redeem', function () {

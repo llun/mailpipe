@@ -13,8 +13,12 @@ block content
             | Welcome to 
             small MailPipe
       .span5
-        form.login-form(action='/users/forget-result.html')
+        form.login-form(action='/users/forget',method='post')
+          if flash.error && flash.error.length > 0
+            .alert.alert-error
+              = flash.error
           .control-group
             input.login-field#email(type='text',placeholder='Email',name='email')
-            label.login-field-icon.fui-mail-16(for='email')
+            i.input-icon.fui-mail
+          input(type='hidden',name='_csrf',value='#{token}')
           button.btn.btn-large.btn-block(type='submit') Forget password
