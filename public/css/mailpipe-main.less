@@ -1,35 +1,3 @@
-@turquoise: #1ABC9C;
-@green-sea: #16A085;
-@emerland: #2ECC71;
-@nephritis: #27AE60;
-@peter-river: #3498DB;
-@belize-hole: #2980B9;
-@amethyst: #9B59B6;
-@wisteria: #8E44AD;
-@wet-asphalt: #34495E;
-@midnight-blue: #2C3E50;
-@sun-flower: #F1C40F;
-@orange: #F39C12;
-@carrot: #E67E22;
-@pumpkin: #D35400;
-@alizarin: #E74C3C;
-@pomegranate: #C0392B;
-@cloud: #ECF0F1;
-@silver: #BDC3C7;
-@concrete: #95A5A6;
-@asbestos: #7F8C8D;
-
-.btn {
-  border-radius: 0;
-  border-bottom: 2px solid @concrete;
-  border-right: 2px solid @concrete;
-
-  &.btn-danger {
-    border-bottom-color: @pomegranate;
-    border-right-color: @pomegranate;
-  }
-}
-
 body {
   padding-top: 60px;
 
@@ -198,15 +166,22 @@ body {
     // end of service-detail
 
     .service-new, .profile {
-      background-color: @cloud;
 
-      h2 {
+      margin-top: 10px;
+      background-color: @cloud;
+      border-bottom: 4px solid @silver;
+      border-right: 4px solid @silver;
+
+      h3 {
         margin-left: 10px;
-        font-weight: bolder;
       }
 
       form {
         margin-top: 20px;
+
+        .control-group {
+          padding-right: 40px;
+        }
 
         label {
           font-weight: bold;
@@ -214,6 +189,11 @@ body {
 
         input[type='text'],
         input[type='password'] {
+          border-radius: 0;
+
+          border-top: none;
+          border-right: none;
+
           &:focus + .form-field-icon {
             color: @turquoise;
           };

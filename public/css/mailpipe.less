@@ -1,3 +1,60 @@
+@turquoise: #1ABC9C;
+@green-sea: #16A085;
+@emerland: #2ECC71;
+@nephritis: #27AE60;
+@peter-river: #3498DB;
+@belize-hole: #2980B9;
+@amethyst: #9B59B6;
+@wisteria: #8E44AD;
+@wet-asphalt: #34495E;
+@midnight-blue: #2C3E50;
+@sun-flower: #F1C40F;
+@orange: #F39C12;
+@carrot: #E67E22;
+@pumpkin: #D35400;
+@alizarin: #E74C3C;
+@pomegranate: #C0392B;
+@cloud: #ECF0F1;
+@silver: #BDC3C7;
+@concrete: #95A5A6;
+@asbestos: #7F8C8D;
+
+.btn {
+  border-radius: 0;
+  border-bottom: 2px solid @concrete;
+  border-right: 2px solid @concrete;
+
+  &.btn-danger {
+    border-bottom-color: @pomegranate;
+    border-right-color: @pomegranate;
+  }
+
+  &.btn-primary {
+    border-bottom-color: @green-sea;
+    border-right-color: @green-sea;
+  }
+
+  &.btn-success {
+    border-bottom-color: @nephritis;
+    border-right-color: @nephritis;
+  }
+}
+
+.badge {
+  border-radius: 0;
+}
+
+.alert {
+  border-radius: 0;
+  padding: 8px 35px 8px 14px;
+  font-weight: bolder;
+
+  &.alert-error {
+    color: @pomegranate;
+  }
+
+}
+
 body {
   padding-bottom: 40px;
   padding-top: 20px;
@@ -21,6 +78,8 @@ body {
         padding-bottom: 12px;
         padding-top: 13px;
         font-size: 1.25em;
+
+        border-radius: 0;
       }
 
       @media all and (max-width: 768px) {

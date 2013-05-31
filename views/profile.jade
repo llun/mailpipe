@@ -3,7 +3,7 @@ extends loggedin-layout
 block inner-content
   .row-fluid
     .offset3.span6.profile
-      h2 Profile
+      h3 Profile
       form.form-horizontal(action='/users/save',method='post')
         if flash.error && flash.error.length > 0
           .alert.alert-error(style='display: block;')
@@ -20,7 +20,7 @@ block inner-content
         .control-group
           label.control-label(for='username') Username
           .controls
-            input.span9(type='text',id='username',disabled,value='#{username}')
+            input.span3(type='text',id='username',disabled,value='#{username}')
             span.fui-man-16.form-field-icon
         .control-group
           label.control-label(for='email') Email
@@ -42,4 +42,4 @@ block inner-content
         .control-group
           .controls
             input(type='hidden',name='_csrf',value='#{token}')
-            button.btn(tabindex='4') Save
+            button.btn.btn-primary(tabindex='4') Save
