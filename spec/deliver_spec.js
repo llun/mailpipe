@@ -43,10 +43,10 @@ describe('Deliver', function () {
       findUserStub.callsArg(1, null, null);
 
       findServiceStub = sinon.stub(Service, 'findOne');
-      findServiceStub.withArgs({ name: 'service1', user: 'u1' }).callsArgWith(1, null, { _id: 's1', name: 'service1', user: 'u1', target: 'http://llun.in.th/post#1', authentication: { type: 'none' } });
-      findServiceStub.withArgs({ name: 'service2', user: 'u1' }).callsArgWith(1, null, { _id: 's2', name: 'service2', user: 'u1', target: 'http://llun.in.th/post#2', authentication: { type: 'none' } });
-      findServiceStub.withArgs({ name: 'service1', user: 'u2' }).callsArgWith(1, null, { _id: 's3', name: 'service1', user: 'u2', target: 'http://llun.in.th/post#3', authentication: { type: 'none' } });
-      findServiceStub.withArgs({ name: 'service2', user: 'u2' }).callsArgWith(1, null, { _id: 's4', name: 'service2', user: 'u2', target: 'http://llun.in.th/action', authentication: { type: 'none' } });
+      findServiceStub.withArgs({ name: 'service1', user: 'u1', enable: true }).callsArgWith(1, null, { _id: 's1', name: 'service1', user: 'u1', target: 'http://llun.in.th/post#1', authentication: { type: 'none' }, enable: true });
+      findServiceStub.withArgs({ name: 'service2', user: 'u1', enable: true }).callsArgWith(1, null, { _id: 's2', name: 'service2', user: 'u1', target: 'http://llun.in.th/post#2', authentication: { type: 'none' }, enable: true });
+      findServiceStub.withArgs({ name: 'service1', user: 'u2', enable: true }).callsArgWith(1, null, { _id: 's3', name: 'service1', user: 'u2', target: 'http://llun.in.th/post#3', authentication: { type: 'none' }, enable: true });
+      findServiceStub.withArgs({ name: 'service2', user: 'u2', enable: true }).callsArgWith(1, null, { _id: 's4', name: 'service2', user: 'u2', target: 'http://llun.in.th/action', authentication: { type: 'none' }, enable: true });
       findServiceStub.callsArg(1, null, null);
 
       createMessageStub = sinon.stub(Message, 'create', function (message, cb) {
