@@ -140,7 +140,7 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
         });
         
         var next = _.map(targets, function (item) {
-          return q.nfcall(Service.findOne.bind(Service), { user: item[0]._id, name: item[1] });
+          return q.nfcall(Service.findOne.bind(Service), { user: item[0]._id, name: item[1], enable: true });
         });
         return q.all(next);
       })
