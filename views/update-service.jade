@@ -23,10 +23,6 @@ block inner-content
               else
                 option(value='basic') Basic Authentication
 
-              if authentication.type === 'oauth'
-                option(value='oauth',selected) OAuth
-              else
-                option(value='oauth') OAuth
         if authentication.type !== 'none'
           .control-group.authentication-info.key-field(style='display:block;')
             label.control-label(for='service-key') Key

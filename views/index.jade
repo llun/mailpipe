@@ -1,16 +1,15 @@
 extends layout
 
 block content
+  a(href='https://github.com/llun/mailpipe')
+    img(style='position: absolute; top: 0; right: 0; border: 0;',src='https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png',alt='Fork me on GitHub')
   .container
-    .nav.pull-right
-      a.btn(href='/users/login.html') Login
-
     .jumbotron
       h1 Mail Pipe
       p.lead
-        | Mail inbox for your service
+        | Pipe email to your service in JSON format
       hr
-      p.lead Want to try, leave your e-mail here. We will send an account to you.
-      .invite-box
-        input.input-xlarge(type='text',name='email',placeholder='Your e-mail address')
-        button.btn.btn-large.btn-success Submit
+      div
+        a.btn.btn-danger(href='/users/login.html') Login with your account
+        p Or
+        a.btn.btn-primary(href='/users/register.html') Register here
