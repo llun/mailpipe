@@ -8,7 +8,7 @@
   "dependencies": {
     "connect-flash": "0.1.x",
     "connect-mongo": "0.3.x",
-    "express": "3.2.5",
+    "express": "3.2.x",
     "jade": "0.31.x",
     "less-middleware": "0.1.x",
     "mailparser": "0.3.x",
