@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/llun/mailpipe.png?branch=master)](https://travis-ci.org/llun/mailpipe)
 [![Dependency Status](https://gemnasium.com/llun/mailpipe.png)](https://gemnasium.com/llun/mailpipe)
 
-MailPipe is a small smtp server for convert mail that send to them to other service e.g. http. My goal is send email to my email address and convert that mail to blog post by request to another service which I'm working on it too.
+MailPipe is a small smtp server for convert mail and send to other service. Mail will convert to JSON format and use http post for send to other service.
 
 ## Installation
 

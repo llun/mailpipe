@@ -9,7 +9,7 @@ var argv = require('optimist')
     .argv;
 
 var deliver = new Deliver(argv.p || process.env.SMTP || 2525, 
-  argv.f || 4,
+  argv.f || 1,
 	argv.d || process.env.DOMAIN || 'mailpipe.me', 
 	process.env.TMP_DIR || '/tmp');
 deliver.start();
