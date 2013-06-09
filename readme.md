@@ -3,7 +3,24 @@
 [![Build Status](https://travis-ci.org/llun/mailpipe.png?branch=master)](https://travis-ci.org/llun/mailpipe)
 [![Dependency Status](https://gemnasium.com/llun/mailpipe.png)](https://gemnasium.com/llun/mailpipe)
 
-MailPipe is a small smtp server for convert mail and send to other service. Mail will convert to JSON format and use http post for send to other service.
+MailPipe is a small smtp server for convert mail and send to other service. Mail will convert to JSON format and use http post for send to other service. JSON format send to other service will in below format.
+
+    { text: 'Simple mail content',
+      headers: 
+       { from: 'llun <llun@mail.com>',
+         'content-type': 'text/plain; charset=us-ascii',
+         'content-transfer-encoding': '7bit',
+         subject: 'Sample Mail',
+         'message-id': '<D8ADBE6A-0E20-42B7-9F91-50313012FF42@me.com>',
+         date: 'Sun, 9 Jun 2013 14:19:28 +0800',
+         to: '"My Blog" <user+service@mailpipe.me>',
+         'mime-version': '1.0 (Mac OS X Mail 6.5 \\(1508\\))',
+         'x-mailer': 'Apple Mail (2.1508)' },
+      subject: 'Sample Mail',
+      priority: 'normal',
+      from: [ { address: 'llun@mail.com', name: 'llun' } ],
+      to: [ { address: 'user+service@mailpipe.me', name: 'My Blog' } ] }
+
 
 ## Installation
 
