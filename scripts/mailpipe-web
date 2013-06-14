@@ -1,18 +1,18 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Providers:		mailpipe-web
+# Provides:		mailpipe-web
 # Required-Start:	$remote_fs $syslog
 # Required-Stop:	$remote_fs $syslog
-# Default-Start:	5
-# Default-Stop:		0 1 2 6
+# Default-Start:	2 3 4 5
+# Default-Stop:		0 1  6
 # Short-Description:	MailPipe Web Interface
 ### END INIT INFO
 
 service="mailpipe-web"
 database=mongodb://localhost/mailpipe
 
-app=/usr/local/mailpipe/mail.js
+app=/usr/local/mailpipe/app.js
 access_log=/var/log/mailpipe.log
 error_log=/var/log/mailpipe.err
 pid=/var/run/mailpipe.web.pid
