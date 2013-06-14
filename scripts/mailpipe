@@ -1,0 +1,80 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Providers:		mailpipe
+# Required-Start:	$remote_fs $syslog
+# Required-Stop:	$remote_fs $syslog
+# Default-Start:	5
+# Default-Stop:		0 1 2 6
+# Short-Description:	MailPipe Server
+### END INIT INFO
+
+service="mailpipe"
+database=mongodb://localhost/mailpipe
+
+mailpipe=/usr/local/mailpipe/mail.js
+access_log=/var/log/mailpipe.log
+error_log=/var/log/mailpipe.err
+pid=/var/run/mailpipe.mail.pid
+
+domain=mailpipe.me
+port=25
+fork=4
+
+forever_min_uptime=5000
+forever_spin_sleep_time=2000
+
+uid=`forever list | awk '/mail.js/ { print $3 }'`
+
+. /lib/lsb/init-functions
+
+case "$1" in
+  start)
+  message="Starting MailPipe server"
+  # MailPIpe service is not run yet
+  if [ -z "$uid" ]
+  then
+    export MONGO_URL=$database
+    /usr/local/bin/forever --minUptime $forever_min_uptime --spinSleepTime $forever_spin_sleep_time -a -l $access_log -o $access_log -e $error_log --pidFile $pid start $mailpipe -p $port -f $fork -d $domain
+    log_daemon_msg $message $service || true
+    log_end_msg 0 || true
+  else
+    log_action_msg "MailPipe server is already started" || true
+  fi
+  ;;
+  stop)
+  message="Stopping MailPipe server"
+  if [ -n "$uid" ]
+  then
+    /usr/local/bin/forever stop $uid
+  fi
+
+  log_daemon_msg $message $service || true
+  log_end_msg 0 || true
+  ;;
+  restart)
+  message="Restarting MailPipe server"
+  if [ -n "$uid" ]
+  then
+    /usr/local/bin/forever restart $uid
+  else
+    export MONGO_URL=$database
+    /usr/local/bin/forever --minUptime $forever_min_uptime --spinSleepTime $forever_spin_sleep_time -a -l $access_log -o $access_log -e $error_log --pidFile $pid start $mailpipe -p $port -f $fork -d $domain
+  fi
+
+  log_daemon_msg $message $service || true
+  log_end_msg 0 || true
+  ;;
+  status)
+  if [ -n "$uid" ]
+  then
+    log_action_msg "running" || true
+  else
+    log_action_msg "not running" || true
+  fi
+  ;;
+  *)
+  log_action_msg "Usage: /etc/init.d/mailpipe {start|stop|restart|status}" || true
+  exit 1
+  ;;
+esac
