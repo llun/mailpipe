@@ -161,11 +161,15 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
             rest.postJson(found.target, mail, options)
               .on('success', function (data) {
                 found.success = true;
+                found.counter.success += 1;
+                found.save();
                 deferred.resolve(found);
               })
               .on('fail', function (data, response) {
                 found.success = false;
                 found.error = 'Service response: ' + response.statusCode;
+                found.counter.fail += 1;
+                found.save();
                 deferred.resolve(found);
               })
               .on('error', function (err) {
