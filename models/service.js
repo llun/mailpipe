@@ -39,6 +39,10 @@ var schema = mongoose.Schema({
     function (val) {
       return /^(http|https):\/\/([\w\-_]+(\.[\w\-_]+)+|localhost)([\w\-\.,@\?\^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/.test(val);
     }, 'Invalid URL'] },
+  counter: {
+    success: { type: Number, required: true, default: 0 },
+    fail: { type: Number, required: true, default: 0 }
+  },
   enable: { type: Boolean, default: true, required: true },
   timestamp: { type: Date, default: Date.now }
 });

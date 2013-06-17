@@ -31,11 +31,21 @@ describe('Deliver', function () {
     var findUserStub = null;
     var findServiceStub = null;
     var createMessageStub = null;
+    var insertServiceStub = null;
 
     var scope = null;
 
+    var fixtures = {
+      action2: { _id: 's5', name: 'service3', user: 'u2', target: 'http://llun.in.th/action2', authentication: { type: 'none' }, enable: true, counter: { success: 0, fail: 0 } },
+      action3: { _id: 's6', name: 'service4', user: 'u2', target: 'http://llun.in.th/action3', authentication: { type: 'none' }, enable: true, counter: { success: 0, fail: 0 } }
+    };
+
     before(function () {
       deliver = new Deliver;
+
+      insertServiceStub = sinon.stub(Service.collection, 'insert', function (service, options, cb) {
+        cb(null, service);
+      });
 
       findUserStub = sinon.stub(User, 'findOne');
       findUserStub.withArgs({ username: 'user1' }).callsArgWith(1, null, { _id: 'u1', username: 'user1', email: 'user1@gmail.com' });
@@ -43,10 +53,12 @@ describe('Deliver', function () {
       findUserStub.callsArg(1, null, null);
 
       findServiceStub = sinon.stub(Service, 'findOne');
-      findServiceStub.withArgs({ name: 'service1', user: 'u1', enable: true }).callsArgWith(1, null, { _id: 's1', name: 'service1', user: 'u1', target: 'http://llun.in.th/post#1', authentication: { type: 'none' }, enable: true });
-      findServiceStub.withArgs({ name: 'service2', user: 'u1', enable: true }).callsArgWith(1, null, { _id: 's2', name: 'service2', user: 'u1', target: 'http://llun.in.th/post#2', authentication: { type: 'none' }, enable: true });
-      findServiceStub.withArgs({ name: 'service1', user: 'u2', enable: true }).callsArgWith(1, null, { _id: 's3', name: 'service1', user: 'u2', target: 'http://llun.in.th/post#3', authentication: { type: 'none' }, enable: true });
-      findServiceStub.withArgs({ name: 'service2', user: 'u2', enable: true }).callsArgWith(1, null, { _id: 's4', name: 'service2', user: 'u2', target: 'http://llun.in.th/action', authentication: { type: 'none' }, enable: true });
+      findServiceStub.withArgs({ name: 'service1', user: 'u1', enable: true }).callsArgWith(1, null, { _id: 's1', name: 'service1', user: 'u1', target: 'http://llun.in.th/post#1', authentication: { type: 'none' }, enable: true, counter: { success: 0, fail: 0 } });
+      findServiceStub.withArgs({ name: 'service2', user: 'u1', enable: true }).callsArgWith(1, null, { _id: 's2', name: 'service2', user: 'u1', target: 'http://llun.in.th/post#2', authentication: { type: 'none' }, enable: true, counter: { success: 0, fail: 0 } });
+      findServiceStub.withArgs({ name: 'service1', user: 'u2', enable: true }).callsArgWith(1, null, { _id: 's3', name: 'service1', user: 'u2', target: 'http://llun.in.th/post#3', authentication: { type: 'none' }, enable: true, counter: { success: 0, fail: 0 } });
+      findServiceStub.withArgs({ name: 'service2', user: 'u2', enable: true }).callsArgWith(1, null, { _id: 's4', name: 'service2', user: 'u2', target: 'http://llun.in.th/action', authentication: { type: 'none' }, enable: true, counter: { success: 0, fail: 0 } });
+      findServiceStub.withArgs({ name: 'service3', user: 'u2', enable: true }).callsArgWith(1, null, fixtures.action2);
+      findServiceStub.withArgs({ name: 'service4', user: 'u2', enable: true }).callsArgWith(1, null, fixtures.action3);
       findServiceStub.callsArg(1, null, null);
 
       createMessageStub = sinon.stub(Message, 'create', function (message, cb) {
@@ -61,6 +73,8 @@ describe('Deliver', function () {
     after(function () {
       findUserStub.restore();
       findServiceStub.restore();
+      insertServiceStub.restore();
+      createMessageStub.restore();
     });
 
     beforeEach(function () {
@@ -70,6 +84,8 @@ describe('Deliver', function () {
       scope.post('/post#3').reply(200, { success: true, data: 'post3' });
       scope.post('/post#4').reply(200, { success: true, data: 'post4' })
       scope.post('/action').reply(404, 'not found');
+      scope.post('/action2').reply(200, { success: true, data: 'action2' });
+      scope.post('/action3').reply(404, 'not found');
     });
 
     it ('should send request to both users', function () {
@@ -128,6 +144,23 @@ describe('Deliver', function () {
         .then(function (messages) {
           should.exist(messages);
           messages.should.have.length(2);
+        });
+    });
+
+    it ('should update service counter when success', function () {
+      return q.nfcall(deliver.send.bind(deliver), __dirname + '/sample.mail', 'someone@mail.com', [ 'user2+service3@mailpipe.me' ])
+        .then(function (messages) {
+          fixtures.action2.counter.success.should.equal(1);
+        });
+    });
+
+    it ('should update service counter when fail', function () {
+      return q.nfcall(deliver.send.bind(deliver), __dirname + '/sample.mail', 'someone@mail.com', [ 'user2+service4@mailpipe.me' ])
+        .then(function (messages) {
+          should.not.exist(messages);
+        })
+        .fail(function (err) {
+          fixtures.action3.counter.fail.should.equal(1);
         });
     });
 
