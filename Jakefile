@@ -3,7 +3,8 @@ var fs = require('fs'),
     nconf = require('nconf'),
     path = require('path'),
     q = require('q'),
-    scrypt = require('scrypt');
+    scrypt = require('scrypt'),
+    _ = require('underscore');
 
 jake.addListener('complete', function () {
   process.exit(0);
@@ -66,6 +67,52 @@ namespace('db', function () {
           console.log (reason.message);
           jake.emit('complete');
         });
+      });
+  });
+
+});
+
+namespace('tools', function () {
+
+  desc('Update service counters')
+  task('update_counter', { async: true }, function () {
+    var database = require('./models/database');
+    var Service = require('./models/service');
+    var Message = require('./models/message');
+
+    var _services = [];
+    q.nfcall(Service.find.bind(Service))
+      .then(function (services) {
+        _services = services;
+        var success = _.map(services, function (service) { 
+          return q.nfcall(Message.count.bind(Message), { to: service._id.toString(), status: 'sent' });
+        });
+        var fail = _.map(services, function (service) {
+          return q.nfcall(Message.count.bind(Message), { to: service._id.toString(), status: 'fail' });
+        });
+
+        var allSuccess = q.all(success);
+        var allFail = q.all(fail);
+
+        return q.all([allSuccess, allFail]);
+      })
+      .spread(function (success, fail) {
+        if (_services.length === 0) return;
+
+        var counters = _.zip(success, fail);
+        _.each(_services, function (service, index) {
+          service.counter.success = counters[index][0];
+          service.counter.fail = counters[index][1];
+        });
+
+        var allServices = _.map(_services, function (service) {
+          return q.nfcall(service.save.bind(service));
+        });
+        return q.all(allServices);
+      })
+      .done(function () {
+        console.log ('Update completed');
+        complete();
       });
   });
 
