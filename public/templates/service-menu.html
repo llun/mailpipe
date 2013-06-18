@@ -2,8 +2,7 @@
   <input type="checkbox" <% if (enable) {%>checked<%}%> data-toggle="switch" />
   <label class="service-label"><%=name%></label>
   <div class="service-info">
-    <span class="service-received"><%= counter.success+counter.fail %> received</span>
-    <span class="service-sent"><%= counter.success %> sent</span>
-    <span class="service-error"><%= counter.fail %> errors</span>
+    <span class="service-sent"><%= counter.success %> success</span>
+    <span class="service-error"><%= counter.fail %> fail</span>
   </div>
 </li>
