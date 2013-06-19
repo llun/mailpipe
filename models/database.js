@@ -6,7 +6,7 @@ var databaseURL = process.env.MONGO_URL || 'mongodb://localhost/mailpipe'
 var database = mongoose.connect(databaseURL, {
     server: { 
       auto_reconnect: true,
-      poolSize: 10,
+      poolSize: 1,
       socketOptions: {
         keepAlive: 1 
       }
