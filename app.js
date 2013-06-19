@@ -101,7 +101,8 @@ else {
       app.use(express.session({
         secret: cookieSecret,
         store: new MongoStore({
-          url: process.env.MONGO_URL || 'mongodb://localhost/mailpipe'
+          url: process.env.MONGO_URL || 'mongodb://localhost/mailpipe',
+          auto_reconnect: true
         })
       }));
     }
