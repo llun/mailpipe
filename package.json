@@ -24,7 +24,7 @@
     "restler": "2.x",
     "scrypt": "1.x",
     "simplesmtp": "0.3.x",
-    "underscore": "1.4.x",
+    "underscore": "1.5.x",
     "underscore.string": "2.3.x"
   },
   "devDependencies": {
