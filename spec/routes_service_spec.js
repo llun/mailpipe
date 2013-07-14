@@ -15,23 +15,19 @@ var Service = require('../models/service'),
 
 var ServiceRoute = require('../routes/service');
 
-describe.skip('Service', function () {
-
-  describe('#add', function () {
-    
-    it ('should redirect to target service when type is oauth2', function (done) {
-      done();
-    });
-
-  });
+describe('Service', function () {
 
   describe('#list', function () {
 
     it ('should return all services with user object', function (done) {
       var serviceAllStub = sinon.stub(Service, 'all').callsArgWith(1, null, [{
         name: 'Service1',
-        target: 'http://somewhere.else/create/item',
         user: 'user1',
+        properties: {
+          username: 'user',
+          password: 'pass',
+          target: 'http://somewhere.else/create/item'
+        },
         timestamp: new Date(),
         enable: true,
         toJSON: function () {
@@ -42,7 +38,10 @@ describe.skip('Service', function () {
         _id: 'user1',
         username: 'user',
         email: 'user@mail.com',
-        timestamp: new Date()
+        timestamp: new Date(),
+        toObject: function () {
+          return _.omit(this, 'toObject');
+        }
       });
 
       var req = {};
