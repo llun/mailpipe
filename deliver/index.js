@@ -165,7 +165,7 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
               strategy = self.strategies[found.type];
             }
 
-            var action = strategy(found, mail);
+            var action = new strategy(found, mail);
             action.process(function (err, result) {
               if (err) { 
                 found.success = false;
