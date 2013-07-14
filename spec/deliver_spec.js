@@ -19,7 +19,7 @@ var User = require('../models/user'),
 
 var Deliver = require('../deliver');
 
-describe('Deliver', function () {
+describe.skip('Deliver', function () {
 
   //Set max emitter to unlimited
   rest.Request.prototype.setMaxListeners(0);

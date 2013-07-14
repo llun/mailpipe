@@ -15,7 +15,7 @@ var Service = require('../models/service'),
 
 var ServiceRoute = require('../routes/service');
 
-describe('Service', function () {
+describe.skip('Service', function () {
 
   describe('#add', function () {
     
