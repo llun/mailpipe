@@ -15,7 +15,15 @@ var Service = require('../models/service'),
 
 var ServiceRoute = require('../routes/service');
 
-describe.skip('Service', function () {
+describe('Service', function () {
+
+  describe('#add', function () {
+    
+    it ('should redirect to target service when type is oauth2', function (done) {
+      done();
+    });
+
+  });
 
   describe('#list', function () {
 

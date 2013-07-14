@@ -15,30 +15,8 @@ var schema = mongoose.Schema({
     }},
   // User object id
   user: { type: String, required: true },
-  authentication: {
-    type: { type: String, required: true, 
-      validate: [ 
-        function (val) {
-          return /(none|basic|oauth)/.test(val);
-        }, 'Invalid type'],
-      set: function (val) {
-        return val.toLowerCase();
-      }},
-    // Basic authentication, will use key as username and pass as password,
-    // For oAuth, key is service key and pass is service secret.
-    key: { type: String, default: '', validate: [
-      function (val) {
-        return this.authentication.type !== 'none' ? val.length > 0 : true;
-      }, 'required' ] },
-    pass: { type: String, default: '', validate: [
-      function (val) {
-        return this.authentication.type !== 'none' ? val.length > 0 : true;
-      }, 'required' ] }
-  },
-  target: { type: String, required: true, validate: [
-    function (val) {
-      return /^(http|https):\/\/([\w\-_]+(\.[\w\-_]+)+|localhost)([\w\-\.,@\?\^=%&:\/~\+#]*[\w\-\@?^=%&\/~\+#])?$/.test(val);
-    }, 'Invalid URL'] },
+  type: { type: String },
+  properties: { type: mongoose.Schema.Types.Mixed },
   counter: {
     success: { type: Number, required: true, default: 0 },
     fail: { type: Number, required: true, default: 0 }
@@ -58,7 +36,7 @@ schema.set('toObject', {
 var Service = database.model('Service', schema);
 Service.add = function (user, input, cb) {
   input.user = user._id.toString();
-  Service.findOne({ name: input.name }, function (err, service) {
+  Service.findOne({ user: input.user, name: input.name }, function (err, service) {
     if (service) {
       return cb ({ message: 'Validation failed',
                    name: 'ValidationError',

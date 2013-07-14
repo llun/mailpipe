@@ -97,18 +97,13 @@ else {
     app.use(express.methodOverride());
   
     app.use(express.cookieParser(cookieSecret));
-    if (process.env.MONGO_URL) {
-      app.use(express.session({
-        secret: cookieSecret,
-        store: new MongoStore({
-          url: process.env.MONGO_URL || 'mongodb://localhost/mailpipe',
-          auto_reconnect: true
-        })
-      }));
-    }
-    else {
-      app.use(express.session());
-    }
+    app.use(express.session({
+      secret: cookieSecret,
+      store: new MongoStore({
+        url: process.env.MONGO_URL || 'mongodb://localhost/mailpipe',
+        auto_reconnect: true
+      })
+    }));
   
     app.use(express.csrf());
     app.use(flash());

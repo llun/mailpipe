@@ -1,12 +1,14 @@
 var _ = require('underscore'),
     q = require('q');
 
+var modules = require('../deliver/modules');
+
 var Service = require('../models/service'),
     User = require('../models/user');
 
 var ServiceRoute = {
   addPage: function (req, res) {
-    res.render('add-service');
+    res.render('add-service', { modules: modules });
   },
 
   updatePage: function (req, res) {
@@ -20,10 +22,23 @@ var ServiceRoute = {
   },
 
   add: function (req, res) {
-    Service.add(req.user, req.body, function (err, service) {
-      if (err) { return res.json(400, err); }
-      return res.json(service);
+    var module = modules[req.body.type];
+    if (!module) {
+      return res.json(400, err);
+    }
+
+    module.validate(req.body.properties, function (err) {
+      if (!err) {
+        Service.add(req.user, req.body, function (err, service) {
+          if (err) { return res.json(400, err); }
+          return res.json(service);
+        });
+      }
+      else {
+        return res.json(400, { message: err.message });
+      }
     });
+
   },
 
   list: function (req, res) {
@@ -67,6 +82,10 @@ var ServiceRoute = {
       if (err) { return res.json(400, err); }
       return res.json({ success: true });
     });
+  },
+
+  callback: function (req, res) {
+    return res.json({ success: true });
   }
 
 };

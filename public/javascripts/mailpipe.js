@@ -241,15 +241,33 @@ var AddServiceView = ServiceFormView.extend({
     e.preventDefault();
 
     var self = this;
-    var service = new Service({
-      name: self.$('#service-name').val(),
-      target: self.$('#service-url').val(),
-      authentication: {
-        type: self.$('#service-authentication-type').val(),
-        key: self.$('#service-key').val(),
-        pass: self.$('#service-pass').val()
-      }
+
+    var object = {};
+    var form = $('form').serializeArray();
+    _.each(form, function (field) {
+
+      var names = field.name.split('.');
+      var level = object;
+      _.each(names, function (name, index) {
+        if (!level[name]) {
+          level[name] = {};
+        }
+
+
+        if (index == names.length - 1) {
+          level[name] = field.value;
+        }
+        else {
+          level = level[name];
+        }
+      });
+
     });
+
+    var csrf = object._csrf;
+    delete object._csrf;
+
+    var service = new Service(object);
     service.save(null, { wait: true, 
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
@@ -262,19 +280,25 @@ var AddServiceView = ServiceFormView.extend({
         var list = document.createElement('ul');
 
         var response = xhr.responseJSON;
-        for (var key in response.errors) {
-          var field = response.errors[key];
-          var child = document.createElement('li');
-            
-          if (field.type === 'required') {
-            child.textContent = field.path + ' is required';
+        console.log (xhr);
+        if (response.errors) {
+          for (var key in response.errors) {
+            var field = response.errors[key];
+            var child = document.createElement('li');
+              
+            if (field.type === 'required') {
+              child.textContent = field.path + ' is required';
+            }
+            else {
+              child.textContent = field.type;
+            }
+            $(list).append(child);
           }
-          else {
-            child.textContent = field.type;
-          }
-          $(list).append(child);
+          self.$('.alert').append(list);
         }
-        self.$('.alert').append(list);
+        else {
+          self.$('.alert').html(response.message);
+        }
         self.$('.alert').show();
       }});
   }

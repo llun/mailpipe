@@ -14,6 +14,8 @@ _.str.include('Underscore.string', 'string');
 
 var MailParser = mailparser.MailParser;
 
+var modules = require('./modules');
+
 var Message = require('../models/message'),
     Service = require('../models/service'),
     User = require('../models/user');
@@ -25,6 +27,8 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
   this.domain = domain;
   this.totalProcess = totalProcess;
   this.smtp = null;
+
+  this.strategies = modules;
 
   var self = this;
 
@@ -109,6 +113,8 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
   this.send = function (file, from, rcpts, cb) {
     cb = cb || function () {};
 
+    var self = this;
+
     var targets = _.map(rcpts, function (rcpt) { return _(rcpt).strLeft('@').split('+'); });
     var users = _.map(targets, function (mixes) { return q.nfcall(User.findOne.bind(User), { username: mixes[0] }); });
 
@@ -153,28 +159,29 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
             deferred.resolve(undefined);
           }
           else {
-            var options = {};
-            if (found.authentication.type === 'basic') {
-              options.username = found.authentication.key,
-              options.password = found.authentication.pass
+
+            var strategy = self.strategies.default;
+            if (found.type && self.strategies[found.type]) {
+              strategy = self.strategies[found.type];
             }
-            rest.postJson(found.target, mail, options)
-              .on('success', function (data) {
+
+            var action = strategy(found, mail);
+            action.process(function (err, result) {
+              if (err) { 
+                found.success = false;
+                found.error = err.message;
+                found.counter.fail += 1;
+                found.save();
+              }
+              else {
                 found.success = true;
                 found.counter.success += 1;
                 found.save();
-                deferred.resolve(found);
-              })
-              .on('fail', function (data, response) {
-                found.success = false;
-                found.error = 'Service response: ' + response.statusCode;
-                found.counter.fail += 1;
-                found.save();
-                deferred.resolve(found);
-              })
-              .on('error', function (err) {
-                deferred.reject(err);
-              });
+              }
+
+              return deferred.resolve(found);
+            });
+
           }
 
           return deferred.promise;
@@ -203,6 +210,13 @@ var Deliver = function (port, totalProcess, domain, fileDirectory) {
       .fail(function (err) {
         return cb(err);
       });
+  }
+
+  this.use = function (stategy) {
+    // Don't override strategy
+    if (!this.strategies[strategy.name]) {
+      this.strategies[strategy.name] = strategy;
+    }
   }
 
 }
