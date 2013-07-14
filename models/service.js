@@ -15,7 +15,7 @@ var schema = mongoose.Schema({
     }},
   // User object id
   user: { type: String, required: true },
-  type: { type: String },
+  type: { type: String, required: true },
   properties: { type: mongoose.Schema.Types.Mixed },
   counter: {
     success: { type: Number, required: true, default: 0 },
@@ -60,9 +60,9 @@ Service.all = function (user, cb) {
 Service.update = function (id, service, cb) {
   var filterFields = {
     $set: {
-      target: service.target,
       name: service.name,
-      authentication: service.authentication,
+      type: service.type,
+      properties: service.properties,
       enable: service.enable
     }
   }
