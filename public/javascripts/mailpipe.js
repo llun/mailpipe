@@ -233,8 +233,14 @@ var AddServiceView = ServiceFormView.extend({
   el: 'body',
   events: function () {
     return _.extend({}, ServiceFormView.prototype.events, {
-      'submit form': 'addService'
+      'submit form': 'addService',
+      'change #service-type': 'showOptions'
     });
+  },
+
+  initialize: function () {
+    var module = this.$('#service-type').val();
+    this.$('#module-' + module).show();
   },
 
   addService: function (e) {
@@ -301,6 +307,12 @@ var AddServiceView = ServiceFormView.extend({
         }
         self.$('.alert').show();
       }});
+  },
+
+  showOptions: function (e) {
+    var module = $(e.currentTarget).val();
+    this.$('.module').hide();
+    this.$('#module-' + module).show();
   }
 });
 

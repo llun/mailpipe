@@ -18,7 +18,7 @@ block inner-content
                 option(value='#{name}')= name
 
         - each module, name in modules
-          div(id='#module-#{name}')
+          div.module(id='module-#{name}')
             - each field, key in module.fields
               .control-group
                 label.control-label(for='#{name}.properties.#{key}')= key
@@ -31,33 +31,6 @@ block inner-content
             ul
               li: button.btn(type='submit') Add
               li: button.btn.btn-danger#cancel Cencel
-
-//        .control-group
-//          label.control-label(for='service-authentication-type') Authentication Type
-//          .controls
-//            select.span6(id='service-authentication-type',name='authentication.type',value='no')
-//              option(value='none',selected='selected') No Authentication
-//              option(value='oauth2') OAuth2
-//        .control-group.authentication-info.key-field
-//          label.control-label(for='service-key') Key
-//          .controls
-//            input.span6(type='text',id='service-key',name='authentication.key')
-//        .control-group.authentication-info.pass-field
-//          label.control-label(for='service-pass') Pass
-//          .controls
-//            input.span6(type='password',id='service-pass',name='authentication.pass')
-//        .control-group
-//          label.control-label(for='service-url') Target
-//          .controls
-//            input.span6(type='text',id='service-url',name='target')
-//        .control-group
-//          .controls
-//            input(type='hidden',id='csrf',name='_csrf',value='#{token}')
-//            ul
-//              li
-//                button.btn(type='submit') Add
-//              li
-//                button.btn.btn-danger#cancel Cancel
 
 block script
   script(type='text/javascript')
