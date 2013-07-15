@@ -17,7 +17,7 @@ var ServiceRoute = {
 
     Service.findOne({ user: user._id, name: name }, function (err, service) {
       if (err) { return res.json(400, err); }
-      return res.render('update-service', service);
+      return res.render('update-service', { service: service, modules: modules });
     });
   },
 

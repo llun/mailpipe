@@ -330,6 +330,11 @@ var UpdateServiceView = ServiceFormView.extend({
     });
   },
 
+  initialize: function () {
+    var module = this.$('#service-type').val();
+    this.$('#module-' + module).show();
+  },
+
   updateService: function(e) {
     e.preventDefault();
 

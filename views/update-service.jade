@@ -8,13 +8,29 @@ block inner-content
         .control-group
           label.control-label(for='service-name') Service Name
           .controls
-            input.span6(type='text',id='service-name',name='service-name',value='#{name}')
+            input.span6(type='text',id='service-name',name='service-name',value='#{service.name}')
+        .control-group
+          label.control-label(for='service-type') Service Type
+          .controls
+            select.span6(id='service-type',name='type',value='#{service.type}')
+              - each module, name in modules
+                option(value='#{name}')= name
 
+        - each module, name in modules
+          div.module(id='module-#{name}')
+            - each field, key in module.fields
+              .control-group
+                label.control-label(for='#{name}.properties.#{key}')= key
+                .controls
+                  - if (name === service.type)
+                    input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}',value='#{service.properties[key]}')
+                  - else
+                    input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}')
 
         .control-group
           .controls
-            input(type='hidden',id='service-enable',name='enable',value='#{enable}')
-            input(type='hidden',id='service-id',name='id',value='#{_id}')
+            input(type='hidden',id='service-enable',name='enable',value='#{service.enable}')
+            input(type='hidden',id='service-id',name='id',value='#{service._id}')
             input(type='hidden',id='csrf',name='_csrf',value='#{token}')
             ul
               li
