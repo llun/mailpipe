@@ -9,42 +9,8 @@ block inner-content
           label.control-label(for='service-name') Service Name
           .controls
             input.span6(type='text',id='service-name',name='service-name',value='#{name}')
-        .control-group
-          label.control-label(for='service-authentication-type') Authentication Type
-          .controls
-            select.span6(id='service-authentication-type',name='authentication.type')
-              if authentication.type !== 'basic' || authentication.type !== 'oauth'
-                option(value='none',selected) No Authentication
-              else
-                option(value='none') No Authentication
 
-              if authentication.type === 'basic'
-                option(value='basic',selected) Basic Authentication
-              else
-                option(value='basic') Basic Authentication
 
-        if authentication.type !== 'none'
-          .control-group.authentication-info.key-field(style='display:block;')
-            label.control-label(for='service-key') Key
-            .controls
-              input.span6(type='text',id='service-key',name='authentication.key',value='#{authentication.key}')
-          .control-group.authentication-info.pass-field(style='display:block;')
-            label.control-label(for='service-pass') Pass
-            .controls
-              input.span6(type='password',id='service-pass',name='authentication.pass',value='#{authentication.pass}')
-        else
-          .control-group.authentication-info.key-field
-            label.control-label(for='service-key') Key
-            .controls
-              input.span6(type='text',id='service-key',name='authentication.key',value='#{authentication.key}')
-          .control-group.authentication-info.pass-field
-            label.control-label(for='service-pass') Pass
-            .controls
-              input.span6(type='password',id='service-pass',name='authentication.pass',value='#{authentication.pass}')
-        .control-group
-          label.control-label(for='service-url') Target
-          .controls
-            input.span6(type='text',id='service-url',name='target',value='#{target}')
         .control-group
           .controls
             input(type='hidden',id='service-enable',name='enable',value='#{enable}')

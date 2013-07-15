@@ -23,7 +23,7 @@ block inner-content
               .control-group
                 label.control-label(for='#{name}.properties.#{key}')= key
                 .controls
-                  input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='properties.#{key}')
+                  input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}')
         
         .control-group
           .controls

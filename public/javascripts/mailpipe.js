@@ -248,12 +248,12 @@ var AddServiceView = ServiceFormView.extend({
 
     var self = this;
 
-    var object = {};
+    var prepare = {};
     var form = $('form').serializeArray();
     _.each(form, function (field) {
 
       var names = field.name.split('.');
-      var level = object;
+      var level = prepare;
       _.each(names, function (name, index) {
         if (!level[name]) {
           level[name] = {};
@@ -270,10 +270,16 @@ var AddServiceView = ServiceFormView.extend({
 
     });
 
-    var csrf = object._csrf;
-    delete object._csrf;
+    var csrf = prepare._csrf;
+    delete prepare._csrf;
 
-    var service = new Service(object);
+    var input = {
+      name: prepare.name,
+      type: prepare.type,
+      properties: prepare[prepare.type].properties
+    }
+
+    var service = new Service(input);
     service.save(null, { wait: true, 
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
