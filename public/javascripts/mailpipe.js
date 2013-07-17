@@ -234,7 +234,7 @@ var AddServiceView = ServiceFormView.extend({
   events: function () {
     return _.extend({}, ServiceFormView.prototype.events, {
       'submit form': 'addService',
-      'change #service-type': 'showOptions'
+      'change #service-type': 'showOption'
     });
   },
 
@@ -292,7 +292,6 @@ var AddServiceView = ServiceFormView.extend({
         var list = document.createElement('ul');
 
         var response = xhr.responseJSON;
-        console.log (xhr);
         if (response.errors) {
           for (var key in response.errors) {
             var field = response.errors[key];
@@ -315,7 +314,7 @@ var AddServiceView = ServiceFormView.extend({
       }});
   },
 
-  showOptions: function (e) {
+  showOption: function (e) {
     var module = $(e.currentTarget).val();
     this.$('.module').hide();
     this.$('#module-' + module).show();
@@ -326,7 +325,8 @@ var UpdateServiceView = ServiceFormView.extend({
   el: 'body',
   events: function () {
     return _.extend({}, ServiceFormView.prototype.events, {
-      'submit form': 'updateService'
+      'submit form': 'updateService',
+      'change #service-type': 'showOption'
     });
   },
 
@@ -335,21 +335,50 @@ var UpdateServiceView = ServiceFormView.extend({
     this.$('#module-' + module).show();
   },
 
+  showOption: function (e) {
+    var module = $(e.currentTarget).val();
+    this.$('.module').hide();
+    this.$('#module-' + module).show();
+  },
+
   updateService: function(e) {
     e.preventDefault();
 
-    var self = this;
-    var service = new Service({
-      _id: self.$('#service-id').val(),
-      name: self.$('#service-name').val(),
-      target: self.$('#service-url').val(),
-      authentication: {
-        type: self.$('#service-authentication-type').val(),
-        key: self.$('#service-key').val(),
-        pass: self.$('#service-pass').val()
-      },
-      enable: self.$('#service-enable').val()
+    var prepare = {};
+    var form = $('form').serializeArray();
+    _.each(form, function (field) {
+
+      var names = field.name.split('.');
+      var level = prepare;
+      _.each(names, function (name, index) {
+        if (!level[name]) {
+          level[name] = {};
+        }
+
+
+        if (index == names.length - 1) {
+          level[name] = field.value;
+        }
+        else {
+          level = level[name];
+        }
+      });
+
     });
+
+    var csrf = prepare._csrf;
+    delete prepare._csrf;
+
+    var input = {
+      _id: prepare.id,
+      name: prepare.name,
+      type: prepare.type,
+      properties: prepare[prepare.type].properties,
+      enable: prepare.enable
+    }
+
+    var self = this;
+    var service = new Service(input);
     service.save(null, { wait: true,
       beforeSend: function (xhr) {
         xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
@@ -362,19 +391,24 @@ var UpdateServiceView = ServiceFormView.extend({
         var list = document.createElement('ul');
 
         var response = xhr.responseJSON;
-        for (var key in response.errors) {
-          var field = response.errors[key];
-          var child = document.createElement('li');
+        if (response.errors) {
+          for (var key in response.errors) {
+            var field = response.errors[key];
+            var child = document.createElement('li');
 
-          if (field.type === 'required') {
-            child.textContent = field.path + ' is required';
+            if (field.type === 'required') {
+              child.textContent = field.path + ' is required';
+            }
+            else {
+              child.textContent = field.type;
+            }
+            $(list).append(child);
           }
-          else {
-            child.textContent = field.type;
-          }
-          $(list).append(child);
+          self.$('.alert').append(list);
         }
-        self.$('.alert').append(list);
+        else {
+          self.$('.alert').html(response.message);
+        }
         self.$('.alert').show();
       }});
   }

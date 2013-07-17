@@ -8,7 +8,7 @@ block inner-content
         .control-group
           label.control-label(for='service-name') Service Name
           .controls
-            input.span6(type='text',id='service-name',name='service-name',value='#{service.name}')
+            input.span6(type='text',id='service-name',name='name',value='#{service.name}')
         .control-group
           label.control-label(for='service-type') Service Type
           .controls
@@ -19,13 +19,16 @@ block inner-content
         - each module, name in modules
           div.module(id='module-#{name}')
             - each field, key in module.fields
-              .control-group
-                label.control-label(for='#{name}.properties.#{key}')= key
-                .controls
-                  - if (name === service.type)
-                    input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}',value='#{service.properties[key]}')
-                  - else
-                    input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}')
+              - if (field.type !== 'hidden')
+                .control-group
+                  label.control-label(for='#{name}.properties.#{key}')= key
+                  .controls
+                    - if (name === service.type)
+                      input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}',value='#{service.properties[key]}')
+                    - else
+                      input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}')
+              - else
+                input(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}',value='#{service.properties[key]}')  
 
         .control-group
           .controls

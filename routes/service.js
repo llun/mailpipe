@@ -24,7 +24,7 @@ var ServiceRoute = {
   add: function (req, res) {
     var module = modules[req.body.type];
     if (!module) {
-      return res.json(400, err);
+      return res.json(400, { message: 'Invalid Type' });
     }
 
     module.validate(req.body.properties, function (err) {
@@ -70,10 +70,23 @@ var ServiceRoute = {
   update: function (req, res) {
     var serviceID = req.param('id');
 
-    Service.update(serviceID, req.body, function (err, service) {
-      if (err) { return res.json(400, err); }
-      return res.json(service);
+    var module = modules[req.body.type];
+    if (!module) {
+      return res.json(400, { message: 'Invalid Type' });
+    }
+
+    module.validate(req.body.properties, function (err) {
+      if (!err) {
+        Service.update(serviceID, req.body, function (err, service) {
+          if (err) { return res.json(400, err); }
+          return res.json(service);
+        });
+      }
+      else {
+        return res.json(400, { message: err.message });
+      }
     });
+
   },
 
   destroy: function (req, res) {

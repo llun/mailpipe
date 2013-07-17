@@ -13,6 +13,7 @@ Strategy.fields = {
 }
 
 Strategy.validate = function (properties, fn) {
+  fn();
 }
 
 module.exports = Strategy;
