@@ -162,6 +162,8 @@ else {
   app.post  ('/services', security.requiredLogin, ServiceRoute.add);
   app.put   ('/services/:id', security.requiredLogin, ServiceRoute.update);
   app.delete('/services/:id', security.requiredLogin, ServiceRoute.destroy);
+
+  app.get   ('/service/oauth/:id', security.requiredLogin, ServiceRoute.moduleAuthorize);
   
   // Messages action pages and api
   app.get   ('/messages', security.requiredLogin, MessageRoute.list);

@@ -85,6 +85,22 @@ var ServiceRoute = {
 
   },
 
+  moduleAuthorize: function (req, res) {
+    var service = req.params.id;
+    var code = req.query.code;
+
+    Service.findById(service, function (err, service) {
+      var module = modules[service.type];
+      module.authorize(service, code, function (err, token) {
+        service.properties.token = token;
+        Service.update(service.id, service, function (err, service) {
+          res.redirect('/main.html');
+        });
+      });
+    });
+
+  },
+
   destroy: function (req, res) {
     var serviceID = req.param('id');
     Service.remove({ _id: serviceID }, function(err) {
