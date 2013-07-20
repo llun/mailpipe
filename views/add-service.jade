@@ -20,10 +20,13 @@ block inner-content
         - each module, name in modules
           div.module(id='module-#{name}')
             - each field, key in module.fields
-              .control-group
-                label.control-label(for='#{name}.properties.#{key}')= key
-                .controls
-                  input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}')
+              - if (field.type !== 'hidden')
+                .control-group
+                  label.control-label(for='#{name}.properties.#{key}')= key
+                  .controls
+                    input.span6(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}')
+              - else
+                input(type='#{field.type}',id='#{name}.properties.#{key}',name='#{name}.properties.#{key}');
         
         .control-group
           .controls

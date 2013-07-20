@@ -384,6 +384,10 @@ var UpdateServiceView = ServiceFormView.extend({
         xhr.setRequestHeader('X-CSRF-Token', self.$('#csrf').val());
       },
       success: function (model,result,xhr) {
+        if (result.action == 'redirect') {
+          window.location = result.url;
+          return
+        }
         window.location = '/main.html';
       },
       error: function (model,xhr,options) {

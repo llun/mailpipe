@@ -128,10 +128,11 @@ else {
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));  
   });
-  
+ 
   app.locals.title = 'MailPipe';
   app.locals.moment = moment;
   app.locals._ = _;
+  app.locals.domain = argv.d || process.env.DOMAIN || 'mailpipe.me';
   
   // Application pages
   app.get   ('/', routes.index);

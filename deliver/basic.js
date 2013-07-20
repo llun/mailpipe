@@ -31,9 +31,4 @@ Strategy.fields = {
   target: { type: 'text', required: true } 
 }
 
-Strategy.validate = function (properties, cb) {
-  if (_s.trim(properties.target).length == 0) return cb(new Error('Target is required'));
-  cb();
-}
-
 module.exports = Strategy;

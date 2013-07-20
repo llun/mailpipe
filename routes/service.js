@@ -27,16 +27,14 @@ var ServiceRoute = {
       return res.json(400, { message: 'Invalid Type' });
     }
 
-    module.validate(req.body.properties, function (err) {
-      if (!err) {
-        Service.add(req.user, req.body, function (err, service) {
-          if (err) { return res.json(400, err); }
-          return res.json(service);
-        });
+    Service.add(req.user, req.body, function (err, service) {
+      if (err) { return res.json(400, err); }
+
+      if (module.after) {
+        return module.after(service, req,res);
       }
-      else {
-        return res.json(400, { message: err.message });
-      }
+
+      return res.json(service);
     });
 
   },
@@ -75,16 +73,14 @@ var ServiceRoute = {
       return res.json(400, { message: 'Invalid Type' });
     }
 
-    module.validate(req.body.properties, function (err) {
-      if (!err) {
-        Service.update(serviceID, req.body, function (err, service) {
-          if (err) { return res.json(400, err); }
-          return res.json(service);
-        });
+    Service.update(serviceID, req.body, function (err, service) {
+      if (err) { return res.json(400, err); }
+
+      if (module.after) {
+        return module.after(service, req, res);
       }
-      else {
-        return res.json(400, { message: err.message });
-      }
+
+      return res.json(service);
     });
 
   },
