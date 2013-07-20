@@ -9,10 +9,23 @@ var getInstance = function (service) {
   return instance;
 }
 
-var Strategy = function () {
+var Strategy = function (service, content) {
 
   this.name = 'blog';
   this.process = function (fn) {
+
+    var instance = getInstance(service);
+    var url = service.properties.url + '/cards/mail';
+
+    instance._request('POST', url, 
+      { 'content-type': 'application/json' }, 
+      JSON.stringify(content), 
+      service.properties.token,
+      function (err, response) {
+        if (err) return fn(err);
+        return fn(null, true, response);
+      });
+
   }
 
 }
