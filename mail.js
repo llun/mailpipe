@@ -1,5 +1,6 @@
 var cluster = require('cluster'),
-		simplesmtp = require('simplesmtp');
+		simplesmtp = require('simplesmtp'),
+    newrelic = require('newrelic');
 
 var Deliver = require('./deliver');
 var argv = require('optimist')
