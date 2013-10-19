@@ -1,5 +1,4 @@
 var cluster = require('cluster');
-var newrelic = require('newrelic');
 var argv = require('optimist')
     .alias('p', 'port')
     .alias('c', 'cookie')
